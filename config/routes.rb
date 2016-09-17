@@ -5,8 +5,8 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
-  root 'game_views#home'
-  get 'ajax' => 'game_views#ajax'
+  root 'home#index'
+  get 'ajax' => 'home#ajax'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

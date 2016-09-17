@@ -1,12 +1,9 @@
 require 'json'
-class GameViewsController < ApplicationController
-
-  def test
-  end
+class HomeController < ApplicationController
 
 
   def ajax
-    file = File.read('app/views/game_views/_housedata.json')
+    file = File.read('app/views/home/housedata.json')
     list=[]
     file.gsub(/\{(.*?)\}/).each do |line|
       list<< JSON.parse(line)['location']
@@ -14,7 +11,7 @@ class GameViewsController < ApplicationController
     render json: list.as_json
   end
 
-  def home
+  def index
 
   end
 
