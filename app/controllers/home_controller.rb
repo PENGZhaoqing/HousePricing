@@ -1,10 +1,11 @@
 require 'json'
 class HomeController < ApplicationController
 
-
   def ajax
-    @house=House.first
-    render json: @house.as_json
+    @house=House.all
+    respond_to do |format|
+      format.json { render :json => @house }
+    end
   end
 
   def index
