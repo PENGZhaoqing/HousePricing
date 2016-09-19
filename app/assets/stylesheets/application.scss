@@ -1,0 +1,75 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ */
+
+@import 'bootstrap-sprockets';
+@import 'bootstrap';
+@import 'bootstrap/theme';
+
+
+//.alert-alert {
+//  @extend .alert-warning;
+//}
+//
+//.alert-notice {
+//  @extend .alert-info;
+//}
+//
+//.table-striped > tbody > tr:hover >td.has_hover {
+//    background-color: #C0C0C0;
+//}
+//
+//body {
+//  padding-top: 60px;
+//  padding-bottom: 70px;
+//}
+//
+////http://stackoverflow.com/questions/22887548/css-stretching-background-image-to-100-width-and-height-of-screen/
+//html {
+//  height: 100%
+//}
+//
+//.body-background {
+//  background-repeat: no-repeat;
+//  background-size: 100% 100%;
+//  background-image: url('background.jpg');
+//}
+//
+//
+//.dropdown-menu {
+//  min-width: 0px !important;
+//}
+//
+//footer {
+//  background-color: #555;
+//  color: white;
+//  padding: 10px;
+//}
+//
+//.navbar-header > a > img {
+//  padding-top:10px
+//}
+//
+//.nav >li>a {
+//  padding-top:20px
+//}
+//
+//.navbar-text{
+//  padding-top:5px
+//}
+//
+//.button_to {
+//  display: inline;
+//}
+//
+
