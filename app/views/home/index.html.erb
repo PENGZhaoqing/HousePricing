@@ -12,11 +12,12 @@
           <button class="btn btn-primary btn-xs" style="margin-left: 60px" onclick="getData()"> 获取数据</button>
           <button class="btn btn-warning btn-xs" onclick="getMarket()"> 数据转换</button>
           <button class="btn btn-danger btn-xs" onclick="draw()"> 聚类图</button>
-          <button class="btn btn-success btn-xs" onclick="searchLocalBus()"> 搜索公交车站</button>
-          <button class="btn btn-success btn-xs" onclick="searchLocalShopping()"> 搜索商场</button>
-          <button class="btn btn-success btn-xs" onclick="searchLocalSubway()"> 搜索地铁</button>
-          <button class="btn btn-success btn-xs" onclick="searchLocalSchool()"> 搜索学校</button>
-          <button class="btn btn-success btn-xs" onclick="searchLocalHospital()"> 搜索医院</button>
+          <button class="btn btn-success btn-xs" onclick="searchLocal(bus_info, '公交站')"> 搜索公交车站</button>
+          <button class="btn btn-success btn-xs" onclick="searchLocal(shopping_info,'商场')"> 搜索商场</button>
+          <button class="btn btn-success btn-xs" onclick="searchLocal(supermaket_info,'超市')"> 搜索超市</button>
+          <button class="btn btn-success btn-xs" onclick="searchLocal(subway_info, '地铁')"> 搜索地铁</button>
+          <button class="btn btn-success btn-xs" onclick="searchLocal(school_info, '学校')"> 搜索学校</button>
+          <button class="btn btn-success btn-xs" onclick="searchLocal(hospital_info, '医院')"> 搜索医院</button>
         </div>
 
       </div>
@@ -28,9 +29,14 @@
   </div>
 </div>
 
+<div id="bus">
+  <%= form_for :courses do |f| %>
+      <%#= f.hidden_field, %>
+  <% end %>
+</div>
+
 <script type="text/javascript">
 
-  //   百度地图API功能
   var map = new BMap.Map("l-map");
   map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
   map.enableScrollWheelZoom(true);
@@ -43,6 +49,7 @@
   var hospital_info = [];
   var school_info = [];
   var shopping_info = [];
+  var supermaket_info=[];
 
   function getMarket() {
     $.each(adds, function (index, element) {
@@ -57,62 +64,35 @@
     });
   }
 
-  function searchLocalBus() {
+
+  //  $('form').submit(function () {
+  //    var valuesToSubmit = $(this).serialize();
+  //    $.ajax({
+  //      type: "POST",
+  //      url: $(this).attr('action'), //sumbits it to the given url of the form
+  //      data: valuesToSubmit,
+  //      dataType: "JSON"
+  //    }).success(function (json) {
+  //      console.log("success", json);
+  //    });
+  //    return false;
+  //  });
+
+  function searchLocal(array, keyword) {
     map.centerAndZoom(house_location, 15);
     map.clearOverlays();
-    var circle = new BMap.Circle(house_location, 1500, {
-      fillColor: "blue",
-      strokeWeight: 1,
-      fillOpacity: 0.1,
-      strokeOpacity: 0.3
-    });
-
-    map.addOverlay(circle);
-
-    var local_bus = new BMap.LocalSearch(map, {
-      renderOptions: {map: map, panel: "r-result", autoViewport: false},
-      pageCapacity: 5,
-      onSearchComplete: function (results) {
-        // 判断状态是否正确
-        if (local_bus.getStatus() == BMAP_STATUS_SUCCESS) {
-
-          for (var i = 0; i < results.getCurrentNumPois(); i++) {
-
-            var locate = results.getPoi(i);
-            var distance = map.getDistance(locate.point, house_location).toFixed(2);
-
-            //定义折线
-            var polyline = new BMap.Polyline([locate.point, house_location], {
-              strokeColor: "blue",
-              strokeWeight: 4,
-              strokeOpacity: 0.5
-            });
-            map.addOverlay(polyline);
-            bus_info.push("{" + locate.title + "," + locate.point.lng + ',' + locate.point.lat + ',' + distance + '}');
-          }
-          document.getElementById("r-result").innerHTML = bus_info.join("<br/>");
-        }
-      }
-    });
-    local_bus.searchNearby('公交站', house_location, 1500);
-  }
-
-
-  function searchLocalHospital() {
-    map.centerAndZoom(house_location, 15);
-    map.clearOverlays();
-    var circle = new BMap.Circle(house_location, 1500, {
+    var circle = new BMap.Circle(house_location, 2000, {
       fillColor: "blue",
       strokeWeight: 1,
       fillOpacity: 0.1,
       strokeOpacity: 0.3
     });
     map.addOverlay(circle);
-    var local_hospital = new BMap.LocalSearch(map, {
+    var local = new BMap.LocalSearch(map, {
       renderOptions: {map: map, panel: "r-result", autoViewport: false},
       pageCapacity: 5,
       onSearchComplete: function (results) {
-        if (local_hospital.getStatus() == BMAP_STATUS_SUCCESS) {
+        if (local.getStatus() == BMAP_STATUS_SUCCESS) {
           for (var i = 0; i < results.getCurrentNumPois(); i++) {
             var locate = results.getPoi(i);
             var distance = map.getDistance(locate.point, house_location).toFixed(2);
@@ -122,115 +102,17 @@
               strokeOpacity: 0.5
             });
             map.addOverlay(polyline);
-            hospital_info.push("{" + locate.title + "," + locate.point.lng + ',' + locate.point.lat + ',' + distance + '}');
+            if (locate.tags) {
+              array.push("{" + locate.title + ',' + locate.tags + "/" + locate.point.lng + '/' + locate.point.lat + '/' + distance + '}');
+            } else {
+              array.push("{" + locate.title + "/" + locate.point.lng + '/' + locate.point.lat + '/' + distance + '}');
+            }
           }
-          document.getElementById("r-result").innerHTML = hospital_info.join("<br/>");
+          document.getElementById("r-result").innerHTML = array.join("<br/>");
         }
       }
     });
-    local_hospital.searchNearby('医院', house_location, 1500);
-  }
-
-
-  function searchLocalSubway() {
-    map.centerAndZoom(house_location, 15);
-    map.clearOverlays();
-    var circle = new BMap.Circle(house_location, 1500, {
-      fillColor: "blue",
-      strokeWeight: 1,
-      fillOpacity: 0.1,
-      strokeOpacity: 0.3
-    });
-    map.addOverlay(circle);
-    var local_subway = new BMap.LocalSearch(map, {
-      renderOptions: {map: map, panel: "r-result", autoViewport: false},
-      pageCapacity: 5,
-      onSearchComplete: function (results) {
-        if (local_subway.getStatus() == BMAP_STATUS_SUCCESS) {
-          for (var i = 0; i < results.getCurrentNumPois(); i++) {
-            var locate = results.getPoi(i);
-            var distance = map.getDistance(locate.point, house_location).toFixed(2);
-            var polyline = new BMap.Polyline([locate.point, house_location], {
-              strokeColor: "blue",
-              strokeWeight: 4,
-              strokeOpacity: 0.5
-            });
-            map.addOverlay(polyline);
-            subway_info.push("{" + locate.title + "," + locate.point.lng + ',' + locate.point.lat + ',' + distance + '}');
-          }
-          document.getElementById("r-result").innerHTML = subway_info.join("<br/>");
-        }
-      }
-    });
-    local_subway.searchNearby('地铁', house_location, 1500);
-  }
-
-
-  function searchLocalSchool() {
-    map.centerAndZoom(house_location, 15);
-    map.clearOverlays();
-    var circle = new BMap.Circle(house_location, 1500, {
-      fillColor: "blue",
-      strokeWeight: 1,
-      fillOpacity: 0.1,
-      strokeOpacity: 0.3
-    });
-    map.addOverlay(circle);
-    var local_school = new BMap.LocalSearch(map, {
-      renderOptions: {map: map, panel: "r-result", autoViewport: false},
-      pageCapacity: 5,
-      onSearchComplete: function (results) {
-        if (local_school.getStatus() == BMAP_STATUS_SUCCESS) {
-          for (var i = 0; i < results.getCurrentNumPois(); i++) {
-            var locate = results.getPoi(i);
-            var distance = map.getDistance(locate.point, house_location).toFixed(2);
-            var polyline = new BMap.Polyline([locate.point, house_location], {
-              strokeColor: "blue",
-              strokeWeight: 4,
-              strokeOpacity: 0.5
-            });
-            map.addOverlay(polyline);
-            school_info.push("{" + locate.title + "," + locate.point.lng + ',' + locate.point.lat + ',' + distance + '}');
-          }
-          document.getElementById("r-result").innerHTML = school_info.join("<br/>");
-        }
-      }
-    });
-    local_school.searchNearby('学校', house_location, 1500);
-  }
-
-
-  function searchLocalShopping() {
-    map.centerAndZoom(house_location, 15);
-    map.clearOverlays();
-    var circle = new BMap.Circle(house_location, 1500, {
-      fillColor: "blue",
-      strokeWeight: 1,
-      fillOpacity: 0.1,
-      strokeOpacity: 0.3
-    });
-    map.addOverlay(circle);
-    var local_shopping = new BMap.LocalSearch(map, {
-      renderOptions: {map: map, panel: "r-result", autoViewport: false},
-      pageCapacity: 5,
-      onSearchComplete: function (results) {
-        if (local_shopping.getStatus() == BMAP_STATUS_SUCCESS) {
-          for (var i = 0; i < results.getCurrentNumPois(); i++) {
-            var locate = results.getPoi(i);
-            var distance = map.getDistance(locate.point, house_location).toFixed(2);
-            var polyline = new BMap.Polyline([locate.point, house_location], {
-              strokeColor: "blue",
-              strokeWeight: 4,
-              strokeOpacity: 0.5
-            });
-            map.addOverlay(polyline);
-            shopping_info.push("{" + locate.title + "," + locate.point.lng + ',' + locate.point.lat + ',' + distance + '}');
-          }
-          document.getElementById("r-result").innerHTML = shopping_info.join("<br/>");
-        }
-      }
-    });
-    local_shopping.searchNearby("超市 商店", house_location, 1500);
+    local.searchNearby(keyword, house_location, 2000);
   }
 
 
