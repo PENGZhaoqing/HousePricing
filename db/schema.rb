@@ -23,6 +23,12 @@ ActiveRecord::Schema.define(version: 20160917162742) do
     t.string   "location"
     t.string   "room_shape"
     t.integer  "price"
+    t.string   "bus"
+    t.string   "hospital"
+    t.string   "school"
+    t.string   "subway"
+    t.string   "shopping"
+    t.string   "supermarket"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end

@@ -10,6 +10,12 @@ class CreateHouses < ActiveRecord::Migration
       t.string :location
       t.string :room_shape
       t.integer :price
+      t.string :bus
+      t.string :hospital
+      t.string :school
+      t.string :subway
+      t.string :shopping
+      t.string :supermarket
 
       t.timestamps null: false
     end

@@ -5,8 +5,17 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
-  root 'home#index'
+  root 'home#collect'
+
   get 'ajax' => 'home#ajax'
+  get 'home/index'=>'home#index'
+
+  post 'home/bus'=>'home/bus'
+  post 'home/hospital'=>'home/hospital'
+  post 'home/subway'=>'home/subway'
+  post 'home/shopping'=>'home/shopping'
+  post 'home/supermarket'=>'home/supermarket'
+  post 'home/school'=>'home/school'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
