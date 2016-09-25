@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 20160925050610) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "shoppings", force: :cascade do |t|
+  create_table "Shops", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

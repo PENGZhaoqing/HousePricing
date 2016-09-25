@@ -5,17 +5,43 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
-  root 'home#collect'
+  root 'home#index'
 
-  get 'ajax' => 'home#ajax'
-  get 'home/index'=>'home#index'
+  resources :buses, only: [:create, :index] do
+    collection do
+      get 'ajax'
+    end
+  end
 
-  post 'home/bus'=>'home/bus'
-  post 'home/hospital'=>'home/hospital'
-  post 'home/subway'=>'home/subway'
-  post 'home/shopping'=>'home/shopping'
-  post 'home/work'=>'home/work'
-  post 'home/school'=>'home/school'
+  resources :works, only: [:create, :index] do
+    collection do
+      get 'ajax'
+    end
+  end
+
+  resources :hospitals, only: [:create, :index] do
+    collection do
+      get 'ajax'
+    end
+  end
+
+  resources :subways, only: [:create, :index] do
+    collection do
+      get 'ajax'
+    end
+  end
+
+  resources :schools, only: [:create, :index] do
+    collection do
+      get 'ajax'
+    end
+  end
+
+  resources :shops, only: [:create, :index] do
+    collection do
+      get 'ajax'
+    end
+  end
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
