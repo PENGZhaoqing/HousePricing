@@ -46,7 +46,7 @@
   var myGeo = new BMap.Geocoder();
   var adds = [];
   //  var markers =[] ;
-  var house_location;
+//  var house_location;
   var bus_info = [];
   var subway_info = [];
   var hospital_info = [];
@@ -135,7 +135,6 @@
       url: "/ajax",
       dataType: 'json',
       success: function (data) {
-
         $.each(data, function (index, element) {
           adds.push(element.community);
         });

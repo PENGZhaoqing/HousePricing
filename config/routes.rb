@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   post 'home/hospital'=>'home/hospital'
   post 'home/subway'=>'home/subway'
   post 'home/shopping'=>'home/shopping'
-  post 'home/supermarket'=>'home/supermarket'
+  post 'home/work'=>'home/work'
   post 'home/school'=>'home/school'
 
   # Example of regular route:

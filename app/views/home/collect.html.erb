@@ -12,10 +12,7 @@
     </div>
 
     <div class="col-sm-9">
-
-
       <div id="l-map" style="height: 500px;width: 100%">
-
       </div>
     </div>
 
@@ -24,22 +21,12 @@
 
 <script type="text/javascript">
 
-
   var map = new BMap.Map("l-map");
   map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
   map.enableScrollWheelZoom(true);
   var myGeo = new BMap.Geocoder();
-  var adds;
-  //  var markers =[] ;
-  var house_location;
-  var bus_info = [];
-  var subway_info = [];
-  var hospital_info = [];
-  var school_info = [];
-  var shopping_info = [];
-  var supermarket_info = [];
-  var work_info = [];
-
+  var keyword = '公交站';
+  var url = 'home/bus';
 
   function getData() {
     $.ajax({
@@ -47,9 +34,13 @@
       url: "/ajax",
       dataType: 'json',
       success: function (data) {
-//        $.each(data, function (index, element) {
-        adds = data.community;
-//        });
+        var id = data.id;
+        myGeo.getPoint(data.community, function (point) {
+          if (point) {
+            var house_location = new BMap.Point(point.lng, point.lat);
+            searchLocal(id, house_location, keyword, url);
+          }
+        }, "北京市");
       },
       error: function () {
         alert('error')
@@ -57,111 +48,53 @@
       timeout: function () {
         alert('time out')
       }
-    })
-  }
-
-  function getMarket() {
-    myGeo.getPoint(adds, function (point) {
-      if (point) {
-        house_location = new BMap.Point(point.lng, point.lat);
-//          markers.push(new BMap.Marker(address));
-      }
-    }, "北京市");
+    });
   }
 
   function starter() {
-
     setTimeout(function () {
       getData();
       setTimeout(function () {
-        getMarket();
-        setTimeout(function () {
-          setTimeout(function () {
-            searchLocal(bus_info, '公交站', 'home/bus');
-            setTimeout(function () {
-              searchLocal(shopping_info, '商场', 'home/shopping');
-              setTimeout(function () {
-                searchLocal(supermarket_info, '超市', 'home/supermarket');
-                setTimeout(function () {
-                  searchLocal(subway_info, '地铁', 'home/subway');
-                  setTimeout(function () {
-                    searchLocal(school_info, '学校', 'home/school');
-                    setTimeout(function () {
-                      searchLocal(hospital_info, '医院', 'home/hospital');
-                      setTimeout(function () {
-                        searchLocal(hospital_info, '写字楼', 'home/work');
-                        setTimeout(function () {
-
-                          adds = null;
-                          house_location = null;
-                          bus_info = [];
-                          subway_info = [];
-                          hospital_info = [];
-                          school_info = [];
-                          shopping_info = [];
-                          supermarket_info = [];
-                          work_info = [];
-                          starter();
-                        }, 1000)
-                      }, 1000)
-                    }, 1000)
-                  }, 1000)
-                }, 1000)
-              }, 1000)
-            }, 1000)
-          }, 1000)
-        }, 1000);
-      }, 1000);
-    }, 1000);
+        starter();
+      }, 500);
+    }, 500);
   }
 
-  function searchLocal(array, keyword, url) {
-    map.centerAndZoom(house_location, 15);
+  function searchLocal(id, location, keyword, url) {
+    var array = [];
     map.clearOverlays();
-    var circle = new BMap.Circle(house_location, 2000, {
-      fillColor: "blue",
-      strokeWeight: 1,
-      fillOpacity: 0.1,
-      strokeOpacity: 0.3
-    });
-    map.addOverlay(circle);
     var local = new BMap.LocalSearch(map, {
-      renderOptions: {map: map, autoViewport: false},
-      pageCapacity: 5,
+      renderOptions: {map: map, autoViewport: true},
       onSearchComplete: function (results) {
         if (local.getStatus() == BMAP_STATUS_SUCCESS) {
           for (var i = 0; i < results.getCurrentNumPois(); i++) {
             var locate = results.getPoi(i);
-            var distance = map.getDistance(locate.point, house_location);
-            var polyline = new BMap.Polyline([locate.point, house_location], {
-              strokeColor: "blue",
-              strokeWeight: 4,
-              strokeOpacity: 0.5
-            });
-            map.addOverlay(polyline);
-            if (locate.tags) {
-              array.push("{" + locate.title + ',' + locate.tags + "/" + locate.point.lng + '/' + locate.point.lat + '/' + distance + '}');
-            } else {
-              array.push("{" + locate.title + "/" + locate.point.lng + '/' + locate.point.lat + '/' + distance + '}');
+            if (locate != null) {
+              var distance = map.getDistance(locate.point, location);
+              array.push(locate.title + "/" + locate.point.lng + '/' + locate.point.lat + '/' + distance);
             }
           }
           document.getElementById("r-result").innerHTML = array.join("<br/>");
-          submit(array, url);
+
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: "info=" + array + "&id=" + id,
+            dataType: "JSON",
+            success: function (data) {
+              console.log("success", data);
+            },
+            error: function () {
+              alert('error in post');
+            },
+            timeout: function () {
+              alert('time out in post')
+            }
+          });
         }
       }
     });
-    local.searchNearby(keyword, house_location, 2000);
-  }
-
-  function submit(info, url) {
-    $.ajax({
-      type: "POST",
-      url: url, //sumbits it to the given url of the form
-      data: "info=" + info,
-      dataType: "JSON"
-    }).success(function (json) {
-      console.log("success", json);
-    });
+    local.searchNearby(keyword, location, 2000);
   }
 
 </script>

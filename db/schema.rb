@@ -11,7 +11,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160917162742) do
+ActiveRecord::Schema.define(version: 20160925050610) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "buses", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "distance"
+    t.float    "latitude"
+    t.float    "longitude"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "buses", ["latitude"], name: "index_buses_on_latitude", using: :btree
+  add_index "buses", ["longitude"], name: "index_buses_on_longitude", using: :btree
+  add_index "buses", ["name"], name: "index_buses_on_name", using: :btree
+
+  create_table "buses_houses", force: :cascade do |t|
+    t.integer  "bus_id"
+    t.integer  "house_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "hospitals", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "houses", force: :cascade do |t|
     t.integer  "area"
@@ -20,17 +48,29 @@ ActiveRecord::Schema.define(version: 20160917162742) do
     t.string   "floor"
     t.string   "build_time"
     t.string   "community"
-    t.string   "location"
     t.string   "room_shape"
-    t.integer  "price"
-    t.string   "bus"
-    t.string   "hospital"
-    t.string   "school"
-    t.string   "subway"
-    t.string   "shopping"
-    t.string   "supermarket"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+  end
+
+  create_table "schools", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "shoppings", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "subways", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "works", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
