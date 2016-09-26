@@ -1,11 +1,9 @@
 class SchoolsController < ApplicationController
+  @@school_id=0
+
   def ajax
-    if !session[:bus_id].nil?
-      session[:bus_id]=session[:bus_id]+1
-    else
-      session[:bus_id]=1
-    end
-    @house=House.find_by(id: session[:bus_id])
+    @@school_id=@@school_id+1
+    @house=House.find_by(id: @@school_id)
     respond_to do |format|
       format.json { render :json => @house }
     end
@@ -18,10 +16,15 @@ class SchoolsController < ApplicationController
     @house=House.find_by(id: params[:id])
     params[:info].split(',').each do |row|
       attr=row.split('/')
-      bus=Bus.new(name: attr[0], longitude: attr[1], latitude: attr[2], distance: attr[3])
-      if bus.valid?
-        bus.save!
-        @house.buses<<bus
+      school=School.new(name: attr[0], longitude: attr[1], latitude: attr[2], distance: attr[3])
+      if school.valid?
+        school.save!
+        @house.schools<<school
+      else
+        exsited_school=School.find_by(longitude: attr[1], latitude: attr[2])
+        unless exsited_school.nil?
+          @house.schools<<exsited_school
+        end
       end
     end
     render json: params.as_json

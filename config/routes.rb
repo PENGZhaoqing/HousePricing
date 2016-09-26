@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   # root 'welcome#index'
 
   root 'home#index'
+  get 'home/ajax'
 
   resources :buses, only: [:create, :index] do
     collection do

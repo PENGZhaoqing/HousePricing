@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160925050610) do
+ActiveRecord::Schema.define(version: 20160925100448) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,8 +37,23 @@ ActiveRecord::Schema.define(version: 20160925050610) do
   end
 
   create_table "hospitals", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "distance"
+    t.float    "latitude"
+    t.float    "longitude"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  add_index "hospitals", ["latitude"], name: "index_hospitals_on_latitude", using: :btree
+  add_index "hospitals", ["longitude"], name: "index_hospitals_on_longitude", using: :btree
+  add_index "hospitals", ["name"], name: "index_hospitals_on_name", using: :btree
+
+  create_table "hospitals_houses", force: :cascade do |t|
+    t.integer  "hospital_id"
+    t.integer  "house_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "houses", force: :cascade do |t|
@@ -53,24 +68,84 @@ ActiveRecord::Schema.define(version: 20160925050610) do
     t.datetime "updated_at",    null: false
   end
 
-  create_table "schools", force: :cascade do |t|
+  create_table "houses_schools", force: :cascade do |t|
+    t.integer  "school_id"
+    t.integer  "house_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "Shops", force: :cascade do |t|
+  create_table "houses_shops", force: :cascade do |t|
+    t.integer  "shop_id"
+    t.integer  "house_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "houses_subways", force: :cascade do |t|
+    t.integer  "subway_id"
+    t.integer  "house_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "houses_works", force: :cascade do |t|
+    t.integer  "work_id"
+    t.integer  "house_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "schools", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "distance"
+    t.float    "latitude"
+    t.float    "longitude"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "schools", ["latitude"], name: "index_schools_on_latitude", using: :btree
+  add_index "schools", ["longitude"], name: "index_schools_on_longitude", using: :btree
+  add_index "schools", ["name"], name: "index_schools_on_name", using: :btree
+
+  create_table "shops", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "distance"
+    t.float    "latitude"
+    t.float    "longitude"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "shops", ["latitude"], name: "index_shops_on_latitude", using: :btree
+  add_index "shops", ["longitude"], name: "index_shops_on_longitude", using: :btree
+  add_index "shops", ["name"], name: "index_shops_on_name", using: :btree
 
   create_table "subways", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "distance"
+    t.float    "latitude"
+    t.float    "longitude"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  add_index "subways", ["latitude"], name: "index_subways_on_latitude", using: :btree
+  add_index "subways", ["longitude"], name: "index_subways_on_longitude", using: :btree
+  add_index "subways", ["name"], name: "index_subways_on_name", using: :btree
+
   create_table "works", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "distance"
+    t.float    "latitude"
+    t.float    "longitude"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "works", ["latitude"], name: "index_works_on_latitude", using: :btree
+  add_index "works", ["longitude"], name: "index_works_on_longitude", using: :btree
+  add_index "works", ["name"], name: "index_works_on_name", using: :btree
 
 end

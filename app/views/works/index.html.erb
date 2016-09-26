@@ -25,13 +25,13 @@
   map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
   map.enableScrollWheelZoom(true);
   var myGeo = new BMap.Geocoder();
-  var keyword = '公交站';
-  var url = 'home/bus';
+  var keyword = '写字楼';
+  var url = 'works';
 
   function getData() {
     $.ajax({
       type: "GET",
-      url: "/ajax",
+      url: "works/ajax",
       dataType: 'json',
       success: function (data) {
         var id = data.id;
@@ -56,8 +56,8 @@
       getData();
       setTimeout(function () {
         starter();
-      }, 500);
-    }, 500);
+      }, 2000);
+    }, 2000);
   }
 
   function searchLocal(id, location, keyword, url) {
