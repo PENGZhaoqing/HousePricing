@@ -1,0 +1,221 @@
+<div id="main" style="width: 1000px;height:600px;"></div>
+
+<script>
+
+  var myChart = echarts.init(document.getElementById('main'));
+
+  $.ajax({
+    type: "GET",
+    url: "home/heatmapdata",
+    dataType: 'json',
+    success: function (data) {
+
+      var house_data = [];
+      $.each(data, function (index, house) {
+        var each_house = [];
+        each_house.push(house.longitude, house.latitude, house.average_price / 1000);
+        house_data.push(each_house);
+      });
+
+      myChart.setOption(option = {
+        backgroundColor: '#404a59',
+        title: {
+          text: '北京房价总体图',
+          subtext: 'source code',
+          sublink: 'https://github.com/PENGZhaoqing/HousePricing',
+          x: 'center',
+          textStyle: {
+            color: '#fff'
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: function (params) {
+            return params.value[2]/10 + '万';
+          }
+        },
+        legend: {
+          orient: 'vertical',
+          y: 'bottom',
+          x: 'right',
+          data: ['pm2.5'],
+          textStyle: {
+            color: '#fff'
+          }
+        },
+        visualMap: {
+          min: 0,
+          max: 130,
+          calculable: true,
+          inRange: {
+            color: ['#50a3ba', '#eac736', 'red']
+          },
+          textStyle: {
+            color: '#fff'
+          }
+        },
+
+        bmap: {
+          center: [116.404, 39.915],
+          zoom: 12,
+          roam: true,
+          mapStyle: {
+            'styleJson': [
+              {
+                'featureType': 'water',
+                'elementType': 'all',
+                'stylers': {
+                  'color': '#031628'
+                }
+              },
+              {
+                'featureType': 'land',
+                'elementType': 'geometry',
+                'stylers': {
+                  'color': '#000102'
+                }
+              },
+              {
+                'featureType': 'highway',
+                'elementType': 'all',
+                'stylers': {
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'arterial',
+                'elementType': 'geometry.fill',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'arterial',
+                'elementType': 'geometry.stroke',
+                'stylers': {
+                  'color': '#0b3d51'
+                }
+              },
+              {
+                'featureType': 'local',
+                'elementType': 'geometry',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'railway',
+                'elementType': 'geometry.fill',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'railway',
+                'elementType': 'geometry.stroke',
+                'stylers': {
+                  'color': '#08304b'
+                }
+              },
+              {
+                'featureType': 'subway',
+                'elementType': 'geometry',
+                'stylers': {
+                  'lightness': -70
+                }
+              },
+              {
+                'featureType': 'building',
+                'elementType': 'geometry.fill',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'all',
+                'elementType': 'labels.text.fill',
+                'stylers': {
+                  'color': '#857f7f'
+                }
+              },
+              {
+                'featureType': 'all',
+                'elementType': 'labels.text.stroke',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'building',
+                'elementType': 'geometry',
+                'stylers': {
+                  'color': '#022338'
+                }
+              },
+              {
+                'featureType': 'green',
+                'elementType': 'geometry',
+                'stylers': {
+                  'color': '#062032'
+                }
+              },
+              {
+                'featureType': 'boundary',
+                'elementType': 'all',
+                'stylers': {
+                  'color': '#465b6c'
+                }
+              },
+              {
+                'featureType': 'manmade',
+                'elementType': 'all',
+                'stylers': {
+                  'color': '#022338'
+                }
+              },
+              {
+                'featureType': 'label',
+                'elementType': 'all',
+                'stylers': {
+                  'visibility': 'off'
+                }
+              }
+            ]
+          }
+        },
+        series: [{
+          name: 'house',
+          type: 'scatter',
+          coordinateSystem: 'bmap',
+          data: house_data,
+          symbolSize: 12,
+          pointSize: 5,
+          blurSize: 6,
+          label: {
+            normal: {
+              show: false
+            },
+            emphasis: {
+              show: false
+            }
+          },
+          itemStyle: {
+            emphasis: {
+              borderColor: '#fff',
+              borderWidth: 1
+            }
+          }
+        }]
+      });
+    },
+    error: function () {
+      alert('error')
+    },
+    timeout: function () {
+      alert('time out')
+    }
+  });
+
+</script>
+
+

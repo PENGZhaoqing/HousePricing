@@ -8,6 +8,9 @@ class CreateHouses < ActiveRecord::Migration
       t.string :build_time
       t.string :community
       t.string :room_shape
+      t.float :latitude
+      t.float :longitude
+      t.string :street
 
       t.timestamps null: false
     end

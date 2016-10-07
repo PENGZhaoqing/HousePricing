@@ -1,0 +1,91 @@
+<br>
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-sm-3">
+      <div class="well">
+        <div class="row">
+          <button class="btn btn-success btn-sm" onclick="getData(); " style="margin-left: 10px">开始</button>
+        </div>
+      </div>
+      <div id="r-result"></div>
+    </div>
+
+    <div class="col-sm-9">
+      <div id="l-map" style="height: 500px;width: 100%">
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  var map = new BMap.Map("l-map");
+  map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
+  map.enableScrollWheelZoom(true);
+  var myGeo = new BMap.Geocoder();
+  var timeInterval = 100;
+
+  function getData() {
+    $.ajax({
+      type: "GET",
+      url: "/home/ajax",
+      dataType: 'json',
+      success: function (data) {
+        var id = data.id;
+        myGeo.getPoint(data.street, function (point) {
+          if (point) {
+            markData(point, id);
+          } else {
+            myGeo.getPoint(data.community, function (repoint) {
+              if (repoint) {
+                markData(repoint, id)
+              } else {
+                setTimeout(function () {
+                  console.log("Error: no address of " + " id: " + data.id + " community: " + data.community +" street: "+data.street);
+                  getData();
+                }, timeInterval);
+              }
+            }, "北京市");
+          }
+        }, "北京市");
+      },
+      error: function () {
+        alert('error')
+      },
+      timeout: function () {
+        alert('time out')
+      }
+    });
+  }
+
+  function markData(point, id) {
+    map.centerAndZoom(point, 16);
+    map.addOverlay(new BMap.Marker(point));
+    setTimeout(function () {
+      sendData(point.lng, point.lat, id);
+    }, timeInterval);
+  }
+
+  function sendData(lng, lat, id) {
+    $.ajax({
+      type: "POST",
+      url: '/home/locate',
+      data: "lng=" + lng + "&lat=" + lat + "&id=" + id,
+      dataType: "JSON",
+      success: function (data) {
+        getData();
+        console.log("success", data);
+      },
+      error: function () {
+        alert('error in post');
+      },
+      timeout: function () {
+        alert('time out in post')
+      }
+    });
+  }
+
+</script>
+

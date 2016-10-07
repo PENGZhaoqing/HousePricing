@@ -13,5 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
-//= require_tree .
+//= require echarts
+//= require dataTool.min
+//= require bmap.min
 //= require bootstrap.min
