@@ -5,8 +5,10 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
-  root 'home#index'
-  get 'home/ajax'
+  root 'home#test'
+  get 'home/index' => 'home#index'
+  get 'home/ajax'  => 'home#ajax'
+
 
   resources :buses, only: [:create, :index] do
     collection do

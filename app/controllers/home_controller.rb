@@ -4,6 +4,10 @@ class HomeController < ApplicationController
 
   end
 
+  def test
+    
+  end
+
   def ajax
     @house=[]
     @house<<House.find_by(id: 7)
