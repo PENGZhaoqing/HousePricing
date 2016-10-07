@@ -1,0 +1,15 @@
+<div class="sort_paginate_ajax">
+  <%= render 'houses' %>
+</div>
+
+<script style="text/javascript">
+
+  $(document).ready(function () {
+    $("body").on("click", '.sort_paginate_ajax .pagination a', function (e) {
+      e.preventDefault();
+      $.getScript(this.href);
+      return false;
+    });
+  });
+
+</script>

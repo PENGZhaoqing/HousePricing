@@ -1,0 +1,7 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "worksheet") do |sheet|
+  sheet.add_row ["小区名", "地址","均价","面积","建造时间","链接","楼层","房型","经度","纬度"]
+  @houses.each do |house|
+    sheet.add_row [house.community, house.street, house.average_price, house.area, house.build_time, house.url,house.floor,house.room_shape,house.latitude, house.longitude]
+  end
+end

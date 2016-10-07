@@ -30,7 +30,7 @@
   function getData() {
     $.ajax({
       type: "GET",
-      url: "/home/ajax",
+      url: "/houses/get_each",
       dataType: 'json',
       success: function (data) {
         var id = data.id;
@@ -71,7 +71,7 @@
   function sendData(lng, lat, id) {
     $.ajax({
       type: "POST",
-      url: '/home/locate',
+      url: '/houses/update',
       data: "lng=" + lng + "&lat=" + lat + "&id=" + id,
       dataType: "JSON",
       success: function (data) {

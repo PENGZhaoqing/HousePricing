@@ -1,161 +1,220 @@
-<br>
-<div class="container-fluid">
-  <div class="row">
+<div id="main" style="width: 1000px;height:600px;"></div>
 
-    <div class="col-sm-3">
-      <div id="r-result"></div>
-    </div>
+<script>
 
-    <div class="col-sm-9">
-      <div class="well">
-        <div class="row">
-          <button class="btn btn-primary btn-xs" style="margin-left: 60px" onclick="getData()"> 获取数据</button>
-          <button class="btn btn-warning btn-xs" onclick="getMarket()"> 数据转换</button>
-          <button class="btn btn-danger btn-xs" onclick="draw()"> 聚类图</button>
-          <button class="btn btn-success btn-xs" onclick="searchLocal(bus_info, '公交站')"> 搜索公交车站</button>
-          <button class="btn btn-success btn-xs" onclick="searchLocal(shopping_info,'商场')"> 搜索商场</button>
-          <button class="btn btn-success btn-xs" onclick="searchLocal(work_info,'写字楼')"> 搜索超市</button>
-          <button class="btn btn-success btn-xs" onclick="searchLocal(subway_info, '地铁')"> 搜索地铁</button>
-          <button class="btn btn-success btn-xs" onclick="searchLocal(school_info, '学校')"> 搜索学校</button>
-          <button class="btn btn-success btn-xs" onclick="searchLocal(hospital_info, '医院')"> 搜索医院</button>
+  var myChart = echarts.init(document.getElementById('main'));
 
-          <%= link_to '公交车站', buses_path %>
-          <%= link_to '地铁', subways_path %>
-          <%= link_to '超市', shops_path %>
-          <%= link_to '写字楼', works_path %>
-          <%= link_to '学校', schools_path %>
-          <%= link_to '医院', hospitals_path %>
+  $.ajax({
+    type: "GET",
+    url: "/home/get_collection",
+    dataType: 'json',
+    success: function (data) {
+      var house_data = [];
+      $.each(data, function (index, house) {
+        var each_house = [];
+        each_house.push(house.longitude, house.latitude, house.average_price / 1000);
+        house_data.push(each_house);
+      });
 
+      myChart.setOption(option = {
+        backgroundColor: '#404a59',
+        title: {
+          text: '北京房价总体图',
+          subtext: 'source code',
+          sublink: 'https://github.com/PENGZhaoqing/HousePricing',
+          x: 'center',
+          textStyle: {
+            color: '#fff'
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: function (params) {
+            return params.value[2]/10 + '万';
+          }
+        },
+        legend: {
+          orient: 'vertical',
+          y: 'bottom',
+          x: 'right',
+          data: ['pm2.5'],
+          textStyle: {
+            color: '#fff'
+          }
+        },
+        visualMap: {
+          min: 0,
+          max: 130,
+          calculable: true,
+          inRange: {
+            color: ['#50a3ba', '#eac736', 'red']
+          },
+          textStyle: {
+            color: '#fff'
+          }
+        },
 
-        </div>
-
-      </div>
-
-      <div id="l-map" style="height: 500px;width: 100%">
-
-      </div>
-
-
-    </div>
-
-  </div>
-</div>
-
-<div id="bus">
-  <%= form_for :courses do |f| %>
-      <%#= f.hidden_field, %>
-  <% end %>
-</div>
-
-<script type="text/javascript">
-
-  var map = new BMap.Map("l-map");
-  map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
-  map.enableScrollWheelZoom(true);
-  var myGeo = new BMap.Geocoder();
-  var adds = [];
-  //  var markers =[] ;
-  //  var house_location;
-  var bus_info = [];
-  var subway_info = [];
-  var hospital_info = [];
-  var school_info = [];
-  var shopping_info = [];
-  var work_info = [];
-
-  function getMarket() {
-    $.each(adds, function (index, element) {
-      myGeo.getPoint(element, function (point) {
-        if (point) {
-          var address = new BMap.Point(point.lng, point.lat);
-          addMarker(address, new BMap.Label(index + ":" + element, {offset: new BMap.Size(20, -10)}));
-//          markers.push(new BMap.Marker(address));
-          house_location = address;
-        }
-      }, "北京市");
-    });
-  }
-
-  //  $('form').submit(function () {
-  //    var valuesToSubmit = $(this).serialize();
-  //    $.ajax({
-  //      type: "POST",
-  //      url: $(this).attr('action'), //sumbits it to the given url of the form
-  //      data: valuesToSubmit,
-  //      dataType: "JSON"
-  //    }).success(function (json) {
-  //      console.log("success", json);
-  //    });
-  //    return false;
-  //  });
-
-  function searchLocal(array, keyword) {
-    map.centerAndZoom(house_location, 15);
-    map.clearOverlays();
-    array = [];
-    var circle = new BMap.Circle(house_location, 2000, {
-      fillColor: "blue",
-      strokeWeight: 1,
-      fillOpacity: 0.1,
-      strokeOpacity: 0.3
-    });
-    map.addOverlay(circle);
-    var local = new BMap.LocalSearch(map, {
-      renderOptions: {map: map, panel: "r-result", autoViewport: false},
-//      pageCapacity: 30,
-      onSearchComplete: function (results) {
-        if (local.getStatus() == BMAP_STATUS_SUCCESS) {
-          for (var i = 0; i < results.getCurrentNumPois(); i++) {
-            var locate = results.getPoi(i);
-            var distance = map.getDistance(locate.point, house_location).toFixed(2);
-            var polyline = new BMap.Polyline([locate.point, house_location], {
-              strokeColor: "blue",
-              strokeWeight: 4,
-              strokeOpacity: 0.5
-            });
-            map.addOverlay(polyline);
-            if (locate.tags) {
-              array.push("{" + locate.title + ',' + locate.tags + "/" + locate.point.lng + '/' + locate.point.lat + '/' + distance + '}');
-            } else {
-              array.push("{" + locate.title + "/" + locate.point.lng + '/' + locate.point.lat + '/' + distance + '}');
+        bmap: {
+          center: [116.404, 39.915],
+          zoom: 12,
+          roam: true,
+          mapStyle: {
+            'styleJson': [
+              {
+                'featureType': 'water',
+                'elementType': 'all',
+                'stylers': {
+                  'color': '#031628'
+                }
+              },
+              {
+                'featureType': 'land',
+                'elementType': 'geometry',
+                'stylers': {
+                  'color': '#000102'
+                }
+              },
+              {
+                'featureType': 'highway',
+                'elementType': 'all',
+                'stylers': {
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'arterial',
+                'elementType': 'geometry.fill',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'arterial',
+                'elementType': 'geometry.stroke',
+                'stylers': {
+                  'color': '#0b3d51'
+                }
+              },
+              {
+                'featureType': 'local',
+                'elementType': 'geometry',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'railway',
+                'elementType': 'geometry.fill',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'railway',
+                'elementType': 'geometry.stroke',
+                'stylers': {
+                  'color': '#08304b'
+                }
+              },
+              {
+                'featureType': 'subway',
+                'elementType': 'geometry',
+                'stylers': {
+                  'lightness': -70
+                }
+              },
+              {
+                'featureType': 'building',
+                'elementType': 'geometry.fill',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'all',
+                'elementType': 'labels.text.fill',
+                'stylers': {
+                  'color': '#857f7f'
+                }
+              },
+              {
+                'featureType': 'all',
+                'elementType': 'labels.text.stroke',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'building',
+                'elementType': 'geometry',
+                'stylers': {
+                  'color': '#022338'
+                }
+              },
+              {
+                'featureType': 'green',
+                'elementType': 'geometry',
+                'stylers': {
+                  'color': '#062032'
+                }
+              },
+              {
+                'featureType': 'boundary',
+                'elementType': 'all',
+                'stylers': {
+                  'color': '#465b6c'
+                }
+              },
+              {
+                'featureType': 'manmade',
+                'elementType': 'all',
+                'stylers': {
+                  'color': '#022338'
+                }
+              },
+              {
+                'featureType': 'label',
+                'elementType': 'all',
+                'stylers': {
+                  'visibility': 'off'
+                }
+              }
+            ]
+          }
+        },
+        series: [{
+          name: 'house',
+          type: 'scatter',
+          coordinateSystem: 'bmap',
+          data: house_data,
+          symbolSize: 12,
+          pointSize: 5,
+          blurSize: 6,
+          label: {
+            normal: {
+              show: false
+            },
+            emphasis: {
+              show: false
+            }
+          },
+          itemStyle: {
+            emphasis: {
+              borderColor: '#fff',
+              borderWidth: 1
             }
           }
-          document.getElementById("r-result").innerHTML = array.join("<br/>");
-        }
-      }
-    });
-    local.searchNearby(keyword, house_location, 2000);
-  }
+        }]
+      });
+    },
+    error: function () {
+      alert('error')
+    },
+    timeout: function () {
+      alert('time out')
+    }
+  });
 
-
-  function draw() {
-    var markerClusterer = new BMapLib.MarkerClusterer(map, {markers: markers});
-  }
-
-  function addMarker(point, label) {
-    var marker = new BMap.Marker(point);
-    map.addOverlay(marker);
-    marker.setLabel(label);
-  }
-
-  function getData() {
-    $.ajax({
-      type: "GET",
-      url: "home/ajax",
-      dataType: 'json',
-      success: function (data) {
-        $.each(data, function (index, element) {
-          adds.push(element.community);
-        });
-
-      },
-      error: function () {
-        alert('error')
-      },
-      timeout: function () {
-        alert('time out')
-      }
-    })
-  }
 </script>
+
 

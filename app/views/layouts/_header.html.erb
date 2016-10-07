@@ -1,0 +1,32 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+
+    <div class="navbar-header">
+      <%= link_to "HousePricing", root_path, class: 'navbar-brand' %>
+    </div>
+
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+
+        <li class=<%= "active" if params[:controller]=="homes" %>> <%= link_to "主页", root_path %></li>
+        <li class=<%= "active" if params[:controller]=="houses" %>> <%= link_to "二手房数据", houses_path %></li>
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>收集周边数据</b>
+            <span class="	glyphicon glyphicon-cog"></span></a>
+          <ul class="dropdown-menu">
+            <li><%= link_to "公交车站", buses_path %></li>
+            <li> <%= link_to "医院", hospitals_path %></li>
+            <li> <%= link_to "学校", schools_path %></li>
+            <li> <%= link_to "地铁站", subways_path %></li>
+            <li> <%= link_to "商场", shops_path %></li>
+            <li> <%= link_to "写字楼", works_path %></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
