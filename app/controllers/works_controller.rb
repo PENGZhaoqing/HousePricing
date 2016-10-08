@@ -10,6 +10,7 @@ class WorksController < ApplicationController
   end
 
   def index
+    render 'shared/index', :locals => {:post_url => works_path, :get_url => ajax_works_path, :keyword => '写字楼'}
   end
 
   def create

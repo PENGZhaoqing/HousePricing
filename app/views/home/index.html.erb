@@ -1,9 +1,9 @@
-<div id="main" style="width: 1000px;height:600px;"></div>
+<div class="container">
+  <div class="" id="main" style="width: 800px;height:500px;"></div>
+</div>
 
 <script>
-
   var myChart = echarts.init(document.getElementById('main'));
-
   $.ajax({
     type: "GET",
     url: "/home/get_collection",
@@ -30,7 +30,7 @@
         tooltip: {
           trigger: 'item',
           formatter: function (params) {
-            return params.value[2]/10 + '万';
+            return params.value[2] / 10 + '万';
           }
         },
         legend: {

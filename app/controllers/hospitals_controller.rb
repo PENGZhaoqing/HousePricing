@@ -11,6 +11,7 @@ class HospitalsController < ApplicationController
   end
 
   def index
+    render 'shared/index', :locals => {:post_url => hospitals_path, :get_url => ajax_hospitals_path, :keyword => '医院'}
   end
 
   def create

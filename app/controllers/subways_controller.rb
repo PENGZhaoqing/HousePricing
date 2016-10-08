@@ -11,6 +11,7 @@ class SubwaysController < ApplicationController
   end
 
   def index
+    render 'shared/index', :locals => {:post_url => subways_path, :get_url => ajax_subways_path, :keyword => '地铁'}
   end
 
   def create

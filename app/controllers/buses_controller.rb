@@ -1,6 +1,5 @@
 class BusesController < ApplicationController
 
-
   @@bus_id=0
 
   def ajax
@@ -12,6 +11,7 @@ class BusesController < ApplicationController
   end
 
   def index
+    render 'shared/index', :locals => {:post_url => buses_path, :get_url => ajax_buses_path, :keyword => '公交车站'}
   end
 
   def create

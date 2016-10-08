@@ -10,6 +10,7 @@ class SchoolsController < ApplicationController
   end
 
   def index
+    render 'shared/index', :locals => {:post_url => schools_path, :get_url => ajax_schools_path, :keyword => '学校'}
   end
 
   def create

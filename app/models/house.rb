@@ -8,7 +8,7 @@ class House < ActiveRecord::Base
 
   def self.search(query)
     unless query.blank?
-      houses=House.where('community LIKE :search OR street LIKE :search ', search: "%#{query}%")
+      houses=House.where('community LIKE :search OR street LIKE :search OR floor LIKE :search OR room_shape LIKE :search', search: "%#{query}%")
       # houses=houses.where('build_time = ?', query).where('area = ?', query)
     else
       houses= House.all
