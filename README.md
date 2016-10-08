@@ -23,6 +23,8 @@ HousePricing旨在提供房价的可视化预测，帮助人们更好的评估�
     3.1 导入百度的可视化工具库（Echarts）
 
     3.2 利用训练的模型对指定房屋价格进行评估和预测，并以科学地方法将结果进行可视化展示
+    
+<img src="/lib/framework_instruction.png" width="700">
   
 ## 说明
 
@@ -38,12 +40,12 @@ HousePricing旨在提供房价的可视化预测，帮助人们更好的评估�
 
 ## 截图
 
-
-## 框架
-
+<img src="/lib/screenshoot1.png" width="700">
+<img src="/lib/screenshoot2.png" width="700">
+<img src="/lib/screenshoot3.png" width="700">
 
 ## 数据说明
 
-
+<img src="/lib/data_type.png" width="700">
 
 
