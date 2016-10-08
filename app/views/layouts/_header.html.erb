@@ -9,10 +9,17 @@
       <ul class="nav navbar-nav">
 
         <li class=<%= "active" if params[:controller]=="homes" %>> <%= link_to "主页", root_path %></li>
-        <li class=<%= "active" if params[:controller]=="houses" %>> <%= link_to "二手房数据", houses_path %></li>
 
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>收集周边数据</b>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">房屋数据</a>
+            <ul class="dropdown-menu">
+              <li><%= link_to "数据列表", houses_path %></li>
+              <li> <%= link_to "补全数据", collect_houses_path %></li>
+            </ul>
+        </li>
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">收集周边数据
             <span class="	glyphicon glyphicon-cog"></span></a>
           <ul class="dropdown-menu">
             <li><%= link_to "公交车站", buses_path %></li>
