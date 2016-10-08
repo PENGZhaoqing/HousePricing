@@ -12,7 +12,7 @@ class ShopsController < ApplicationController
   end
 
   def index
-    render 'shared/index', :locals => {:post_url => shops_url, :get_url => ajax_shops_path, :keyword => '商店'}
+    render 'shared/index', :locals => {:post_url => shops_url, :get_url => ajax_shops_path, :keyword => '商场'}
   end
 
   def create
