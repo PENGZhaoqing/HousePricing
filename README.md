@@ -42,11 +42,13 @@ HousePricing旨在提供房价的可视化预测，帮助人们更好的评估�
 
 ## 截图
 
-<img src="/lib/screenshoot1.png" width="700">
-<img src="/lib/screenshoot3.png" width="700">
-<img src="/lib/screenshoot2.png" width="700">
+<img src="/lib/screenshoot1.png" width="900">
+<img src="/lib/screenshoot3.png" width="900">
+<img src="/lib/screenshoot2.png" width="900">
 
 ## 数据说明
+
+现有的一些字段以及字段之间的关联如下：
 
 <img src="/lib/data_type.png" width="700">
 
