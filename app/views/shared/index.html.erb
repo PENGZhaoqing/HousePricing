@@ -3,7 +3,7 @@
 
     <div class="col-sm-3">
 
-      <h3 class="text-muted text-center">搜索附近: <%=keyword%></h3>
+      <h3 class="text-muted text-center">搜索附近: <%= keyword %></h3>
       <hr>
 
       <form class="form-horizontal">
@@ -19,16 +19,63 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label class="col-sm-4 control-label">搜索范围</label>
+          <div class="col-sm-8">
+            <%= select_tag "time_interval", options_for_select([1000, 1500, 2000], 1000), class: "form-control" %>
+          </div>
+        </div>
+
         <button class="btn btn-success btn-block">开始</button>
+
       </form>
-      <div id="r-result">
+
+      <button class="btn btn-danger btn-block" onclick="flag=true;" style="margin-top: 10px">暂停</button>
+
+      <hr>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          当前房屋信息:
+        </div>
+        <div class="panel-body">
+          <table>
+            <tr>
+              <td style="width: 20%">ID:</td>
+              <td id="id"></td>
+            </tr>
+            <tr>
+              <td style="width: 20%">小区:</td>
+              <td id="community"></td>
+            </tr>
+            <tr>
+              <td style="width: 20%">地址:</td>
+              <td id="street"></td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
 
-    <div class="col-sm-9">
+    <div class="col-sm-3">
+      <table id="result" class="table table-responsive table-condensed table-hover">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>地点名</th>
+          <th>直线距离</th>
+        </tr>
+        </thead>
+        <tbody style="font-size: small">
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-sm-6">
       <div id="l-map" style="height: 500px;width: 100%">
       </div>
     </div>
+
   </div>
 </div>
 
@@ -38,6 +85,8 @@
   var get_url = null;
   var keyword = null;
   var timeInterval = null;
+  var flag = false;
+  var search_range;
 
   $('form').submit(function () {
     var params = $(this).serializeArray();
@@ -45,10 +94,12 @@
     get_url = params[1].value;
     keyword = params[2].value;
     timeInterval = Number(params[3].value);
+    search_range = Number(params[4].value);
 
-    if (post_url == null || get_url == null || keyword == null || timeInterval == null) {
+    if (post_url == null || get_url == null || keyword == null || timeInterval == null || search_range == null) {
       alert('Error in post url: ' + post_url + " or get url: " + get_url + " keyword: " + keyword + " or timeInterval: " + timeInterval);
     } else {
+      flag = false;
       getData();
     }
     return false; // prevents normal behaviour
@@ -68,6 +119,11 @@
       dataType: 'json',
       success: function (data) {
         var id = data.id;
+
+        $('#id').html(data.id);
+        $('#community').html(data.community);
+        $('#street').html(data.street);
+
         myGeo.getPoint(data.street, function (point) {
           if (point) {
             markData(point, id);
@@ -107,16 +163,20 @@
     map.clearOverlays();
     var local = new BMap.LocalSearch(map, {
       renderOptions: {map: map, autoViewport: true},
+      pageCapacity: 50,
       onSearchComplete: function (results) {
+
+        $('#result tbody tr').remove();
+
         if (local.getStatus() == BMAP_STATUS_SUCCESS) {
           for (var i = 0; i < results.getCurrentNumPois(); i++) {
             var locate = results.getPoi(i);
             if (locate != null) {
-              var distance = map.getDistance(locate.point, location);
+              var distance = parseFloat(map.getDistance(locate.point, location)).toFixed(1);
               array.push(locate.title + "/" + locate.point.lng + '/' + locate.point.lat + '/' + distance);
+              $('#result tbody').append("<tr><td>" + array.length + "</td><td>" + locate.title + "</td><td>" + distance + "</td></tr>");
             }
           }
-          document.getElementById("r-result").innerHTML = array.join("<br/>");
 
           $.ajax({
             type: "POST",
@@ -124,8 +184,13 @@
             data: "info=" + array + "&id=" + id,
             dataType: "JSON",
             success: function (data) {
-              getData();
-              console.log("success", data);
+              if (flag) {
+                console.log("warning", 'pause');
+              } else {
+                getData();
+                console.log("success", data);
+              }
+
             },
             error: function () {
               alert('error in post');
@@ -140,7 +205,7 @@
         }
       }
     });
-    local.searchNearby(keyword, location, 2000);
+    local.searchNearby(keyword, location, search_range);
   }
 
 
