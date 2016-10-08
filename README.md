@@ -26,9 +26,9 @@ HousePricing旨在提供房价的可视化预测，帮助人们更好的评估�
   
 ## 说明
 
-1. HousePricing由Rails web框架开发（Ruby），，能实现数据挖掘中的1.2和1.3，以及数据可视化部分
+1. HousePricing由Rails web框架开发（Ruby），能实现数据挖掘中的1.2和1.3，以及数据可视化部分
 
-2. 至于数据挖掘中的1.1部分由[scrapy-hoursepricing](https://github.com/PENGZhaoqing/scrapy-hoursepricing)实现, scrapy-hoursepricing由Scrapy爬虫框架开发（Python），能够轻松实现对房价网站中的信息进行抓取，抓取后的数据将存为json格式，然后由HousePricing进行解析并储存在数据库中。
+2. 数据挖掘中的1.1部分由[scrapy-hoursepricing](https://github.com/PENGZhaoqing/scrapy-hoursepricing)实现，这个应用是由Scrapy爬虫框架开发（Python），能够轻松实现对房价网站中的信息进行抓取，抓取后的数据将存为json格式，然后由HousePricing进行解析并储存在数据库中。
 
 ## 目前进展
 
@@ -39,8 +39,11 @@ HousePricing旨在提供房价的可视化预测，帮助人们更好的评估�
 ## 截图
 
 
+## 框架
+
 
 ## 数据说明
+
 
 
 
