@@ -23,7 +23,11 @@ HousePricing旨在提供房价的可视化预测，帮助人们更好的评估�
     3.1 导入百度的可视化工具库（Echarts）
 
     3.2 利用训练的模型对指定房屋价格进行评估和预测，并以科学地方法将结果进行可视化展示
-  
+    
+<p align="center">
+   <img src="/lib/framework_instruction.png" width="700">
+</p>
+
 ## 说明
 
 1. HousePricing由Rails web框架开发（Ruby），能实现数据挖掘中的1.2和1.3，以及数据可视化部分
@@ -38,12 +42,16 @@ HousePricing旨在提供房价的可视化预测，帮助人们更好的评估�
 
 ## 截图
 
+<img src="/lib/screenshoot1.png" width="900">
 
-## 框架
+<img src="/lib/screenshoot3.png" width="900">
 
+<img src="/lib/screenshoot2.png" width="900">
 
 ## 数据说明
 
+现有的一些字段以及字段之间的关联如下：
 
+<img src="/lib/data_type.png" width="700">
 
 
