@@ -88,6 +88,11 @@
   var flag = false;
   var search_range;
 
+  var map = new BMap.Map("l-map");
+  map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
+  map.enableScrollWheelZoom(true);
+  var myGeo = new BMap.Geocoder();
+
   $('form').submit(function () {
     var params = $(this).serializeArray();
     post_url = params[0].value;
@@ -104,12 +109,6 @@
     }
     return false; // prevents normal behaviour
   });
-
-
-  var map = new BMap.Map("l-map");
-  map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
-  map.enableScrollWheelZoom(true);
-  var myGeo = new BMap.Geocoder();
 
 
   function getData() {

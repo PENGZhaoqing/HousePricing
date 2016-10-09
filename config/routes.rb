@@ -8,11 +8,12 @@ Rails.application.routes.draw do
   root 'home#index'
   get 'home/get_collection'
 
-  resources :houses, only:[:update,:index] do
+  resources :houses, only:[:create,:index] do
     collection do
       get 'collect'
       get 'get_each'
       get 'export'
+      get 'rollup'
     end
   end
 

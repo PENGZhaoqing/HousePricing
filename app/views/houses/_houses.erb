@@ -1,7 +1,8 @@
 <div class="container">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">二手房数据</h3>
+      <text class="panel-title">二手房数据</text>
+      <%= link_to "整合周边数据", rollup_houses_path, class: "btn btn-primary btn-xs pull-right" %>
     </div>
     <div class="panel-body" style="min-height:750px">
 
@@ -45,14 +46,22 @@
         <thead>
         <tr>
           <th>小区名</th>
-          <th>街道</th>
-          <th>均价</th>
+          <!--<th>街道</th>-->
           <th>建造时间</th>
           <th>楼层</th>
           <th>面积</th>
           <th>房型</th>
-          <th>经度</th>
-          <th>纬度</th>
+          <!--<th>经度</th>-->
+          <!--<th>纬度</th>-->
+          <th>医院</th>
+          <th>公交</th>
+          <th>商场</th>
+          <th>地铁</th>
+          <th>学校</th>
+          <th>写字楼</th>
+          <th>据天安门距离</th>
+          <th>每平米价格</th>
+
         </tr>
         </thead>
         <tbody>
@@ -61,12 +70,10 @@
               <td>
                 <text style="font-size: small"><%= house.community %></text>
               </td>
-              <td>
-                <text style="font-size: small"><%= house.street %></text>
-              </td>
-              <td>
-                <text style="font-size: small"><%= house.average_price %></text>
-              </td>
+              <!--<td>-->
+                <!--<text style="font-size: small"><%#= house.street %></text>-->
+              <!--</td>-->
+
               <td>
                 <text style="font-size: small"><%= house.build_time %></text>
               </td>
@@ -79,11 +86,37 @@
               <td>
                 <text style="font-size: small"><%= house.room_shape %></text>
               </td>
+              <!--<td>-->
+              <!--<text style="font-size: small"><%#= house.latitude %></text>-->
+              <!--</td>-->
+              <!--<td>-->
+              <!--<text style="font-size: small"><%#= house.longitude %></text>-->
+              <!--</td>-->
               <td>
-                <text style="font-size: small"><%= house.latitude %></text>
+                <text style="font-size: small"><%= house.hospital_num %></text>
               </td>
               <td>
-                <text style="font-size: small"><%= house.longitude %></text>
+                <text style="font-size: small"><%= house.bus_num %></text>
+              </td>
+              <td>
+                <text style="font-size: small"><%= house.shop_num %></text>
+              </td>
+              <td>
+                <text style="font-size: small"><%= house.subway_num %></text>
+              </td>
+              <td>
+                <text style="font-size: small"><%= house.school_num %></text>
+              </td>
+              <td>
+                <text style="font-size: small"><%= house.work_num %></text>
+              </td>
+
+              <td>
+                <text style="font-size: small"><%= house.distance %></text>
+              </td>
+
+              <td>
+                <text style="font-size: small"><%= house.average_price %></text>
               </td>
 
             </tr>

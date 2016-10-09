@@ -1,17 +1,67 @@
-<br>
 <div class="container-fluid">
   <div class="row">
 
     <div class="col-sm-3">
-      <div class="well">
-        <div class="row">
-          <button class="btn btn-success btn-sm" onclick="getData(); " style="margin-left: 10px">开始</button>
+
+      <h3 class="text-muted text-center">补全数据</h3>
+      <hr>
+
+      <form class="form-horizontal">
+        <%#= select_tag "data_type", options_for_select(["公交车站", "商场", "学校", "地铁站", "写字楼", "医院"], "公交车站"), class: "form-control" %>
+        <%= hidden_field_tag "post_url", post_url %>
+        <%= hidden_field_tag "get_url", get_url %>
+
+        <div class="form-group">
+          <label class="col-sm-4 control-label">刷新频率</label>
+          <div class="col-sm-8">
+            <%= select_tag "time_interval", options_for_select([0,10,100, 200, 500, 1000, 2000], 100), class: "form-control" %>
+          </div>
+        </div>
+
+        <button class="btn btn-success btn-block">开始</button>
+
+      </form>
+
+      <button class="btn btn-danger btn-block" onclick="flag=true;" style="margin-top: 10px">暂停</button>
+
+      <hr>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          当前房屋信息:
+        </div>
+        <div class="panel-body">
+          <table>
+            <tr>
+              <td style="width: 20%">ID:</td>
+              <td id="id"></td>
+            </tr>
+            <tr>
+              <td style="width: 20%">小区:</td>
+              <td id="community"></td>
+            </tr>
+            <tr>
+              <td style="width: 20%">地址:</td>
+              <td id="street"></td>
+            </tr>
+          </table>
         </div>
       </div>
-      <div id="r-result"></div>
     </div>
 
-    <div class="col-sm-9">
+    <div class="col-sm-3">
+      <table id="result" class="table table-responsive table-condensed table-hover">
+        <thead>
+        <tr>
+          <th>与天安门直线距离</th>
+        </tr>
+        </thead>
+        <tbody style="font-size: small">
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-sm-6">
       <div id="l-map" style="height: 500px;width: 100%">
       </div>
     </div>
@@ -21,19 +71,49 @@
 
 <script type="text/javascript">
 
+  var post_url = null;
+  var get_url = null;
+  //  var keyword = null;
+  var timeInterval = null;
+  var flag = false;
+  var search_range;
+
   var map = new BMap.Map("l-map");
-  map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
+  map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);
   map.enableScrollWheelZoom(true);
   var myGeo = new BMap.Geocoder();
-  var timeInterval = 100;
+
+
+  $('form').submit(function () {
+    var params = $(this).serializeArray();
+    post_url = params[0].value;
+    get_url = params[1].value;
+//    keyword = params[2].value;
+    timeInterval = Number(params[2].value);
+//    search_range = Number(params[3].value);
+
+    if (post_url == null || get_url == null  || timeInterval == null) {
+      alert('Error in post url: ' + post_url + " or get url: " + get_url );
+    } else {
+      flag = false;
+      getData();
+    }
+    return false; // prevents normal behaviour
+  });
+
 
   function getData() {
     $.ajax({
       type: "GET",
-      url: "/houses/get_each",
+//      url: "/houses/get_each",
+      url: get_url,
       dataType: 'json',
       success: function (data) {
         var id = data.id;
+        $('#id').html(data.id);
+        $('#community').html(data.community);
+        $('#street').html(data.street);
+
         myGeo.getPoint(data.street, function (point) {
           if (point) {
             markData(point, id);
@@ -43,7 +123,7 @@
                 markData(repoint, id)
               } else {
                 setTimeout(function () {
-                  console.log("Error: no address of " + " id: " + data.id + " community: " + data.community +" street: "+data.street);
+                  console.log("Error: no address of " + " id: " + data.id + " community: " + data.community + " street: " + data.street);
                   getData();
                 }, timeInterval);
               }
@@ -61,22 +141,31 @@
   }
 
   function markData(point, id) {
-    map.centerAndZoom(point, 16);
+//    map.centerAndZoom(point, 16);
     map.addOverlay(new BMap.Marker(point));
+    var distance = parseFloat(map.getDistance(point, new BMap.Point(116.404, 39.915))).toFixed(1);
+    $('#result tbody').append("<tr><td>" + distance + "</td></tr>");
     setTimeout(function () {
-      sendData(point.lng, point.lat, id);
+      sendData(distance, point.lng, point.lat, id);
     }, timeInterval);
   }
 
-  function sendData(lng, lat, id) {
+  function sendData(distance, lng, lat, id) {
     $.ajax({
       type: "POST",
-      url: '/houses/update',
-      data: "lng=" + lng + "&lat=" + lat + "&id=" + id,
+//      url: '/houses/update',
+      url: post_url,
+      data: "lng=" + lng + "&lat=" + lat + "&id=" + id + '&distance=' + distance,
       dataType: "JSON",
       success: function (data) {
-        getData();
-        console.log("success", data);
+        if (flag) {
+          console.log("warning", 'pause');
+        } else {
+          $('#result tbody tr').remove();
+          map.clearOverlays();
+          getData();
+          console.log("success", data);
+        }
       },
       error: function () {
         alert('error in post');
