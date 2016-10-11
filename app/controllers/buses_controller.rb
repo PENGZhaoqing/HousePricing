@@ -4,9 +4,13 @@ class BusesController < ApplicationController
 
   def ajax
     @@bus_id= @@bus_id+1
-    @house=House.find_by(id: @@bus_id)
+    house=House.find_by(id: @@bus_id)
+    while (!house.buses.blank?)
+      @@bus_id= @@bus_id+1
+      house=House.find_by(id: @@bus_id)
+    end
     respond_to do |format|
-      format.json { render :json => @house }
+      format.json { render :json => house }
     end
   end
 

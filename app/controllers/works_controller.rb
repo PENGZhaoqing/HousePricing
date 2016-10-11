@@ -3,9 +3,13 @@ class WorksController < ApplicationController
 
   def ajax
     @@work_id=@@work_id+1
-    @house=House.find_by(id: @@work_id)
+    house=House.find_by(id: @@work_id)
+    while (!house.works.blank?)
+      @@work_id= @@work_id+1
+      house=House.find_by(id: @@work_id)
+    end
     respond_to do |format|
-      format.json { render :json => @house }
+      format.json { render :json => house }
     end
   end
 

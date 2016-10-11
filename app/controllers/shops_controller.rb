@@ -4,10 +4,13 @@ class ShopsController < ApplicationController
 
   def ajax
     @@shop_id= @@shop_id+1
-
-    @house=House.find_by(id: @@shop_id)
+    house=House.find_by(id: @@shop_id)
+    while (!house.shops.blank?)
+      @@shop_id= @@shop_id+1
+      house=House.find_by(id: @@shop_id)
+    end
     respond_to do |format|
-      format.json { render :json => @house }
+      format.json { render :json => house }
     end
   end
 

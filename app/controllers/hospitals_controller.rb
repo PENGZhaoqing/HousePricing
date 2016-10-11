@@ -4,9 +4,13 @@ class HospitalsController < ApplicationController
 
   def ajax
     @@hospital=@@hospital+1
-    @house=House.find_by(id: @@hospital)
+    house=House.find_by(id: @@hospital)
+    while (!house.hospitals.blank?)
+      @@hospital= @@hospital+1
+      house=House.find_by(id: @@hospital)
+    end
     respond_to do |format|
-      format.json { render :json => @house }
+      format.json { render :json => house }
     end
   end
 
