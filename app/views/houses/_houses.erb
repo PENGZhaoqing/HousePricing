@@ -17,7 +17,7 @@
         </div>
 
         <div class="col col-sm-1 pull-right">
-          <%= form_tag export_houses_path, :method => :get, class: "pull-right" do %>
+          <%= form_tag export_houses_path(:format => :csv), :method => :get, class: "pull-right" do %>
               <%= hidden_field_tag :query, params[:query] %>
               <%= button_tag(type: "submit", class: "btn btn-success btn-sm") do %>
                   <span class="glyphicon glyphicon-floppy-save"></span> 导出
@@ -71,7 +71,7 @@
                 <text style="font-size: small"><%= house.community %></text>
               </td>
               <!--<td>-->
-                <!--<text style="font-size: small"><%#= house.street %></text>-->
+              <!--<text style="font-size: small"><%#= house.street %></text>-->
               <!--</td>-->
 
               <td>

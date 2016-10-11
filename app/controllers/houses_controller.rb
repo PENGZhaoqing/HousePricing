@@ -10,20 +10,55 @@ class HousesController < ApplicationController
 
   def rollup
     House.all.each do |house|
-      house.bus_num=house.buses.length unless house.buses.blank?
-      house.work_num=house.works.length unless house.works.blank?
-      house.school_num=house.schools.length unless house.schools.blank?
-      house.subway_num=house.subways.length unless house.subways.blank?
-      house.shop_num=house.shops.length unless house.shops.blank?
-      house.hospital_num=house.hospitals.length unless house.hospitals.blank?
-      house.save
+      unless house.latitude.nil? and house.longitude.nil?
+        unless house.buses.blank?
+          house.bus_num=house.buses.length
+        else
+          house.bus_num=0
+        end
+
+        unless house.works.blank?
+          house.work_num=house.works.length
+        else
+          house.work_num=0
+        end
+
+        unless house.schools.blank?
+          house.school_num=house.schools.length
+        else
+          house.school_num=0
+        end
+
+        unless house.subways.blank?
+          house.subway_num=house.subways.length
+        else
+          house.subway_num=0
+        end
+
+        unless house.shops.blank?
+          house.shop_num=house.shops.length
+        else
+          house.shop_num=0
+        end
+
+        unless house.hospitals.blank?
+          house.hospital_num=house.hospitals.length
+        else
+          house.hospital_num=0
+        end
+
+        house.save
+      end
     end
     redirect_to houses_path, flash: {:success => '整合完毕'}
   end
 
   def export
-    @houses=House.limit(1000)
-    render xlsx: "二手房数据_#{DateTime.now}", template: "houses/export.xlsx.axlsx"
+    @houses=House.limit(800).where.not('houses.latitude' => nil).where.not('houses.longitude' => nil)
+    respond_to do |format|
+      format.xlsx { render "二手房数据_#{DateTime.now}", template: "houses/export.xlsx.axlsx" }
+      format.csv { send_data @houses.to_csv, filename: "houses-#{Date.today}.csv" }
+    end
   end
 
   @@house_id=0
