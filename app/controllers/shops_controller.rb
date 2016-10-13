@@ -5,9 +5,12 @@ class ShopsController < ApplicationController
   def ajax
     @@shop_id= @@shop_id+1
     house=House.find_by(id: @@shop_id)
-    while (!house.shops.blank?)
+    while (house.nil? or house.shops.count<=50)
       @@shop_id= @@shop_id+1
       house=House.find_by(id: @@shop_id)
+      if @@shop_id>House.last.id
+        break
+      end
     end
     respond_to do |format|
       format.json { render :json => house }
@@ -20,6 +23,7 @@ class ShopsController < ApplicationController
 
   def create
     @house=House.find_by(id: params[:id])
+    @house.shops.delete_all
     params[:info].split(',').each do |row|
       attr=row.split('/')
       shop=Shop.new(name: attr[0], longitude: attr[1], latitude: attr[2], distance: attr[3])

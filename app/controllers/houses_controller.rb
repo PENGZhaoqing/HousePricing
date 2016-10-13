@@ -8,6 +8,14 @@ class HousesController < ApplicationController
     render 'houses/collect', :locals => {:post_url => houses_path, :get_url => get_each_houses_path}
   end
 
+  def filter
+    @houses=House.where('houses.latitude' => nil, 'houses.longitude' => nil)
+    @houses.each do |house|
+      house.destroy
+    end
+    redirect_to houses_path, flash: {:success => '成功删除'}
+  end
+
   def rollup
     House.all.each do |house|
       unless house.latitude.nil? and house.longitude.nil?
@@ -58,7 +66,7 @@ class HousesController < ApplicationController
   end
 
   def export
-    @houses=House.limit(800).where.not('houses.latitude' => nil).where.not('houses.longitude' => nil)
+    @houses=House.where.not('houses.latitude' => nil).where.not('houses.longitude' => nil).where('houses.distance < 40000')
     respond_to do |format|
       format.xlsx { render "二手房数据_#{DateTime.now}", template: "houses/export.xlsx.axlsx" }
       format.csv { send_data @houses.to_csv, filename: "houses-#{Date.today}.csv" }

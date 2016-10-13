@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       get 'get_each'
       get 'export'
       get 'rollup'
+      get 'filter'
     end
   end
 

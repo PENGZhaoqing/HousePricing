@@ -5,9 +5,12 @@ class SubwaysController < ApplicationController
   def ajax
     @@subway_id=@@subway_id+1
     house=House.find_by(id: @@subway_id)
-    while (!house.subways.blank?)
+    while (house.nil? or house.subways.count<=50)
       @@subway_id= @@subway_id+1
       house=House.find_by(id: @@subway_id)
+      if @@subway_id>House.last.id
+        break
+      end
     end
     respond_to do |format|
       format.json { render :json => house }
@@ -20,6 +23,7 @@ class SubwaysController < ApplicationController
 
   def create
     @house=House.find_by(id: params[:id])
+    @house.subways.delete_all
     params[:info].split(',').each do |row|
       attr=row.split('/')
       subway=Subway.new(name: attr[0], longitude: attr[1], latitude: attr[2], distance: attr[3])

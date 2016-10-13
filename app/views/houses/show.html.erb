@@ -34,7 +34,15 @@
     </div>
     <div class="panel panel-default">
       <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i> 基本信息
+        <i class="fa fa-bar-chart-o fa-fw"></i> 地图信息
+        <div class="pull-right">
+          <a href="#" class="btn btn-primary btn-xs" role="button">公交车站</a>
+          <a href="#" class="btn btn-primary btn-xs" role="button">地铁</a>
+          <a href="#" class="btn btn-success btn-xs" role="button">学校</a>
+          <a href="#" class="btn btn-info btn-xs" role="button">写字楼</a>
+          <a href="#" class="btn btn-danger btn-xs" role="button">医院</a>
+          <a href="#" class="btn btn-warning btn-xs" role="button">购物</a>
+        </div>
       </div>
       <div class="panel-body">
         <div id="l-map" style="height: 400px;width: 100%">
@@ -51,6 +59,15 @@
         <div id="pie_chart" style="width: 100%;height: 400px"></div>
       </div>
     </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <i class="fa fa-bell fa-fw"></i>雷达图
+      </div>
+      <div class="panel-body">
+        <div id="radar_chart" style="width: 100%;height: 400px"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -58,24 +75,33 @@
 
   var Histogram = echarts.init(document.getElementById('histogram'));
   var pie_chart = echarts.init(document.getElementById('pie_chart'));
+  var radar_chart = echarts.init(document.getElementById('radar_chart'));
   var histogram_colors = ['#d14a61', '#5793f3'];
 
   var map = new BMap.Map("l-map");
-  map.centerAndZoom(new BMap.Point(<%=@house.longitude%>, <%=@house.latitude%>), 16);
+  var house_point = new BMap.Point(<%=@house.longitude%>, <%=@house.latitude%>);
+  map.centerAndZoom(house_point, 16);
   map.enableScrollWheelZoom(true);
   var myGeo = new BMap.Geocoder();
 
   $('#bus_detail').click(function (event) {
     event.preventDefault();
+    map.centerAndZoom(house_point, 16);
+
     <% @house.buses.each do |bus|%>
 
 //    var pt = new BMap.Point(116.417, 39.909);
 //    var myIcon = new BMap.Icon("/icon/bus.png", new BMap.Size(100,100));
 //    var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
 //    map.addOverlay(marker2);
-    map.centerAndZoom(new BMap.Point(<%=@house.longitude%>, <%=@house.latitude%>), 16);
 
-    map.addOverlay(new BMap.Marker(new BMap.Point(<%=bus.longitude%>, <%=bus.latitude%>)));
+    var point = new BMap.Point(<%=bus.longitude%>, <%=bus.latitude%>);
+    var marker = new BMap.Marker(point);
+    map.addOverlay(marker);
+
+    var label = new BMap.Label("我是文字标注哦", {offset: new BMap.Size(20, -10)});
+    marker.setLabel(label);
+
     <%end%>
   });
 
@@ -187,6 +213,43 @@
         }
       }
     ]
-  })
+  });
+
+
+  radar_chart.setOption({
+    tooltip: {},
+    legend: {
+      data: ['综合评定']
+    },
+    radar: {
+      // shape: 'circle',
+      indicator: [
+        {name: '生活', max: 20},
+        {name: '交通', max: 20},
+        {name: '工作', max: 20},
+        {name: '教育', max: 20},
+        {name: '环境', max: 20}
+      ]
+    },
+    series: [{
+      type: 'radar',
+      // areaStyle: {normal: {}},
+      data: [
+        {
+          value: [evaluate(<%=@house.shop_num%>, <%=average(@house.shops)%>), evaluate(<%=@house.bus_num%>, <%=average(@house.works)%>), evaluate(<%=@house.work_num%>, <%=average(@house.shops)%>), evaluate(<%=@house.school_num%>, <%=average(@house.schools)%>), 15],
+          name: '综合评定'
+        }
+      ]
+    }]
+  });
+
+  function evaluate(num, distance) {
+    var result = (distance + 500) / 2000 * num;
+    if (result > 20) {
+      result = 20
+    }
+    return result;
+  }
+
 
 </script>

@@ -4,9 +4,12 @@ class WorksController < ApplicationController
   def ajax
     @@work_id=@@work_id+1
     house=House.find_by(id: @@work_id)
-    while (!house.works.blank?)
+    while (house.nil? or house.works.count<=50)
       @@work_id= @@work_id+1
       house=House.find_by(id: @@work_id)
+      if @@work_id>House.last.id
+        break
+      end
     end
     respond_to do |format|
       format.json { render :json => house }
@@ -19,6 +22,7 @@ class WorksController < ApplicationController
 
   def create
     @house=House.find_by(id: params[:id])
+    @house.works.delete_all
     params[:info].split(',').each do |row|
       attr=row.split('/')
       work=Work.new(name: attr[0], longitude: attr[1], latitude: attr[2], distance: attr[3])

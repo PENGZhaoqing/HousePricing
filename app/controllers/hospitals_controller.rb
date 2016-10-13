@@ -5,9 +5,12 @@ class HospitalsController < ApplicationController
   def ajax
     @@hospital=@@hospital+1
     house=House.find_by(id: @@hospital)
-    while (!house.hospitals.blank?)
+    while (house.nil? or house.hospitals.count<=50)
       @@hospital= @@hospital+1
       house=House.find_by(id: @@hospital)
+      if @@hospital>House.last.id
+        break
+      end
     end
     respond_to do |format|
       format.json { render :json => house }
@@ -20,6 +23,7 @@ class HospitalsController < ApplicationController
 
   def create
     @house=House.find_by(id: params[:id])
+    @house.hospitals.delete_all
     params[:info].split(',').each do |row|
       attr=row.split('/')
       hospital=Hospital.new(name: attr[0], longitude: attr[1], latitude: attr[2], distance: attr[3])
