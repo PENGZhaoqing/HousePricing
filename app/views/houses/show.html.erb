@@ -13,12 +13,12 @@
 
 <div class="row">
 
-  <%= render 'houses/item', :num => @house.bus_num, :color => 'primary', :type => '公交', icon: 'fa fa-bus fa-4x' %>
-  <%= render 'houses/item', :num => @house.work_num, :color => 'green', :type => '写字喽', icon: 'fa fa-building fa-4x' %>
-  <%= render 'houses/item', :num => @house.school_num, :color => 'yellow', :type => '学校', icon: 'fa fa-university fa-4x' %>
-  <%= render 'houses/item', :num => @house.hospital_num, :color => 'red', :type => '医院', icon: 'fa fa-heart fa-4x' %>
-  <%= render 'houses/item', :num => @house.subway_num, :color => 'light-blue', :type => '地铁', icon: 'fa fa-subway fa-4x' %>
-  <%= render 'houses/item', :num => @house.shop_num, :color => 'purple', :type => '购物', icon: 'fa fa-shopping-cart fa-4x' %>
+  <%= render 'houses/item', :num => @house.bus_num, :color => 'primary', :type => '公交', id: 'bus_detail', icon: 'fa fa-bus fa-4x' %>
+  <%= render 'houses/item', :num => @house.work_num, :color => 'green', :type => '写字喽', id: 'work_detail', icon: 'fa fa-building fa-4x' %>
+  <%= render 'houses/item', :num => @house.school_num, :color => 'yellow', :type => '学校', id: 'school_detail', icon: 'fa fa-university fa-4x' %>
+  <%= render 'houses/item', :num => @house.hospital_num, :color => 'red', :type => '医院', id: 'hospital_detail', icon: 'fa fa-heart fa-4x' %>
+  <%= render 'houses/item', :num => @house.subway_num, :color => 'light-blue', :type => '地铁', id: 'subway_detail', icon: 'fa fa-subway fa-4x' %>
+  <%= render 'houses/item', :num => @house.shop_num, :color => 'purple', :type => '购物', id: 'shop_detail', icon: 'fa fa-shopping-cart fa-4x' %>
 
 </div>
 <!-- /.row -->
@@ -26,26 +26,7 @@
   <div class="col-lg-8">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i> Area Chart Example
-        <div class="pull-right">
-          <div class="btn-group">
-            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-              Actions
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu pull-right" role="menu">
-              <li><a href="#">Action</a>
-              </li>
-              <li><a href="#">Another action</a>
-              </li>
-              <li><a href="#">Something else here</a>
-              </li>
-              <li class="divider"></li>
-              <li><a href="#">Separated link</a>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <i class="fa fa-bar-chart-o fa-fw"></i> 直方图
       </div>
       <div class="panel-body">
         <div id="histogram" style="width: 100%;height: 400px"></div>
@@ -56,7 +37,8 @@
         <i class="fa fa-bar-chart-o fa-fw"></i> 基本信息
       </div>
       <div class="panel-body">
-
+        <div id="l-map" style="height: 400px;width: 100%">
+        </div>
       </div>
     </div>
   </div>
@@ -76,10 +58,29 @@
 
   var Histogram = echarts.init(document.getElementById('histogram'));
   var pie_chart = echarts.init(document.getElementById('pie_chart'));
-  var colors = ['#d14a61', '#5793f3'];
+  var histogram_colors = ['#d14a61', '#5793f3'];
+
+  var map = new BMap.Map("l-map");
+  map.centerAndZoom(new BMap.Point(<%=@house.longitude%>, <%=@house.latitude%>), 16);
+  map.enableScrollWheelZoom(true);
+  var myGeo = new BMap.Geocoder();
+
+  $('#bus_detail').click(function (event) {
+    event.preventDefault();
+    <% @house.buses.each do |bus|%>
+
+//    var pt = new BMap.Point(116.417, 39.909);
+//    var myIcon = new BMap.Icon("/icon/bus.png", new BMap.Size(100,100));
+//    var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+//    map.addOverlay(marker2);
+    map.centerAndZoom(new BMap.Point(<%=@house.longitude%>, <%=@house.latitude%>), 16);
+
+    map.addOverlay(new BMap.Marker(new BMap.Point(<%=bus.longitude%>, <%=bus.latitude%>)));
+    <%end%>
+  });
 
   Histogram.setOption({
-        color: colors,
+        color: histogram_colors,
         tooltip: {
           trigger: 'axis'
         },
@@ -114,7 +115,7 @@
             position: 'right',
             axisLine: {
               lineStyle: {
-                color: colors[0]
+                color: histogram_colors[0]
               }
             },
             axisLabel: {
@@ -129,7 +130,7 @@
             position: 'left',
             axisLine: {
               lineStyle: {
-                color: colors[1]
+                color: histogram_colors[1]
               }
             },
             axisLabel: {
@@ -154,7 +155,6 @@
   );
 
   pie_chart.setOption({
-
     tooltip: {
       trigger: 'item',
       formatter: "{a} <br/>{b} : {c} ({d}%)"
