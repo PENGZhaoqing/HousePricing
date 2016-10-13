@@ -67,11 +67,8 @@
         <% @houses.each do |house| %>
             <tr>
               <td>
-                <text style="font-size: small"><%= house.community %></text>
+                <text style="font-size: small"><%= link_to "#{house.community}", house_path(house) %></text>
               </td>
-              <!--<td>-->
-              <!--<text style="font-size: small"><%#= house.street %></text>-->
-              <!--</td>-->
 
               <td>
                 <text style="font-size: small"><%= house.build_time %></text>

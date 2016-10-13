@@ -53,6 +53,10 @@ class HousesController < ApplicationController
     redirect_to houses_path, flash: {:success => '整合完毕'}
   end
 
+  def show
+    @house=House.find_by_id(params[:id])
+  end
+
   def export
     @houses=House.limit(800).where.not('houses.latitude' => nil).where.not('houses.longitude' => nil)
     respond_to do |format|

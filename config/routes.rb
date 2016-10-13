@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   root 'home#index'
   get 'home/get_collection'
 
-  resources :houses, only:[:create,:index] do
+  resources :houses, only: [:create, :index, :show] do
     collection do
       get 'collect'
       get 'get_each'
