@@ -61,6 +61,21 @@ class HousesController < ApplicationController
     redirect_to houses_path, flash: {:success => '整合完毕'}
   end
 
+  def ajax
+    house=House.find_by_id(params[:id])
+
+    data=house.buses  if params[:data]=='bus'
+    data=house.works  if params[:data]=='work'
+    data=house.hospitals  if params[:data]=='hospital'
+    data=house.subways  if params[:data]=='subway'
+    data=house.shops  if params[:data]=='shop'
+    data=house.schools  if params[:data]=='school'
+
+    respond_to do |format|
+      format.json { render :json => data }
+    end
+  end
+
   def show
     @house=House.find_by_id(params[:id])
   end
@@ -79,9 +94,12 @@ class HousesController < ApplicationController
     @@house_id= @@house_id+1
     house=House.find_by(id: @@house_id)
 
-    while (!house.latitude.nil? and !house.longitude.nil? and !house.distance.nil?)
+    while (house.nil? or !house.latitude.nil? or !house.longitude.nil? or !house.distance.nil?)
       @@house_id= @@house_id+1
       house=House.find_by(id: @@house_id)
+      if (@@house_id>House.last.id)
+        break
+      end
     end
 
     respond_to do |format|

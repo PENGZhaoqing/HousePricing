@@ -13,12 +13,12 @@
 
 <div class="row">
 
-  <%= render 'houses/item', :num => @house.bus_num, :color => 'primary', :type => '公交', id: 'bus_detail', icon: 'fa fa-bus fa-4x' %>
-  <%= render 'houses/item', :num => @house.work_num, :color => 'green', :type => '写字喽', id: 'work_detail', icon: 'fa fa-building fa-4x' %>
-  <%= render 'houses/item', :num => @house.school_num, :color => 'yellow', :type => '学校', id: 'school_detail', icon: 'fa fa-university fa-4x' %>
-  <%= render 'houses/item', :num => @house.hospital_num, :color => 'red', :type => '医院', id: 'hospital_detail', icon: 'fa fa-heart fa-4x' %>
-  <%= render 'houses/item', :num => @house.subway_num, :color => 'light-blue', :type => '地铁', id: 'subway_detail', icon: 'fa fa-subway fa-4x' %>
-  <%= render 'houses/item', :num => @house.shop_num, :color => 'purple', :type => '购物', id: 'shop_detail', icon: 'fa fa-shopping-cart fa-4x' %>
+  <%= render 'houses/item', :num => @house.bus_num, :color => 'primary', :type => '公交', path: ajax_house_path(@house, data: 'bus'), icon: 'fa fa-bus fa-4x' %>
+  <%= render 'houses/item', :num => @house.work_num, :color => 'green', :type => '写字喽', path: ajax_house_path(@house, data: 'work'), icon: 'fa fa-building fa-4x' %>
+  <%= render 'houses/item', :num => @house.school_num, :color => 'yellow', :type => '学校', path: ajax_house_path(@house, data: 'school'), icon: 'fa fa-university fa-4x' %>
+  <%= render 'houses/item', :num => @house.hospital_num, :color => 'red', :type => '医院', path: ajax_house_path(@house, data: 'hospital'), icon: 'fa fa-heart fa-4x' %>
+  <%= render 'houses/item', :num => @house.subway_num, :color => 'light-blue', :type => '地铁', path: ajax_house_path(@house, data: 'subway'), icon: 'fa fa-subway fa-4x' %>
+  <%= render 'houses/item', :num => @house.shop_num, :color => 'purple', :type => '购物', path: ajax_house_path(@house, data: 'shop'), icon: 'fa fa-shopping-cart fa-4x' %>
 
 </div>
 <!-- /.row -->
@@ -32,20 +32,22 @@
         <div id="histogram" style="width: 100%;height: 400px"></div>
       </div>
     </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i> 地图信息
-        <div class="pull-right">
-          <a href="#" class="btn btn-primary btn-xs" role="button">公交车站</a>
-          <a href="#" class="btn btn-primary btn-xs" role="button">地铁</a>
-          <a href="#" class="btn btn-success btn-xs" role="button">学校</a>
-          <a href="#" class="btn btn-info btn-xs" role="button">写字楼</a>
-          <a href="#" class="btn btn-danger btn-xs" role="button">医院</a>
-          <a href="#" class="btn btn-warning btn-xs" role="button">购物</a>
+    <div id="nav-scroll">
+      <div id="map-detail" class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-bar-chart-o fa-fw"></i> 地图信息
+          <div class="pull-right">
+            <a href="#" class="btn btn-primary btn-xs" path="<%= ajax_house_path(@house, data: 'bus') %>" role="button">公交车站</a>
+            <a href="#" class="btn btn-primary btn-xs" path="<%= ajax_house_path(@house, data: 'subway') %>" role="button">地铁</a>
+            <a href="#" class="btn btn-success btn-xs" path="<%= ajax_house_path(@house, data: 'school') %>" role="button">学校</a>
+            <a href="#" class="btn btn-info btn-xs" path="<%= ajax_house_path(@house, data: 'work') %>" role="button">写字楼</a>
+            <a href="#" class="btn btn-danger btn-xs" path="<%= ajax_house_path(@house, data: 'hospital') %>" role="button">医院</a>
+            <a href="#" class="btn btn-warning btn-xs" path="<%= ajax_house_path(@house, data: 'shop') %>" role="button">购物</a>
+          </div>
         </div>
-      </div>
-      <div class="panel-body">
-        <div id="l-map" style="height: 400px;width: 100%">
+        <div class="panel-body">
+          <div id="l-map" style="height: 400px;width: 100%">
+          </div>
         </div>
       </div>
     </div>
@@ -81,28 +83,47 @@
   var map = new BMap.Map("l-map");
   var house_point = new BMap.Point(<%=@house.longitude%>, <%=@house.latitude%>);
   map.centerAndZoom(house_point, 16);
-  map.enableScrollWheelZoom(true);
-  var myGeo = new BMap.Geocoder();
+  var marker = new BMap.Marker(house_point);
+  map.addOverlay(marker);
+  marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+  //  map.enableScrollWheelZoom(true);
+  //  var myGeo = new BMap.Geocoder();
 
-  $('#bus_detail').click(function (event) {
+  $('#map-detail a').click(function (event) {
     event.preventDefault();
-    map.centerAndZoom(house_point, 16);
+    var link = $(this);
+    $.scrollTo($('#nav-scroll'), 300);
+    $.ajax({
+      type: "GET",
+      url: link.attr('path'),
+      dataType: 'json',
+      success: function (data) {
+        map.centerAndZoom(house_point, 16);
+        map.clearOverlays();
+        var marker = new BMap.Marker(house_point);
+        map.addOverlay(marker);
+        marker.setAnimation(BMAP_ANIMATION_BOUNCE);
 
-    <% @house.buses.each do |bus|%>
+        $.each(data, function (index, item) {
+          var point = new BMap.Point(item.longitude, item.latitude);
+//          var marker = new BMap.Marker(point);
+//          map.addOverlay(marker);
+          var maker_type = link.attr('path').split('?')[1].split('=')[1];
+          var myIcon = new BMap.Icon("/icon/" + maker_type + ".png", new BMap.Size(30, 30));
+          var marker2 = new BMap.Marker(point, {icon: myIcon});  // 创建标注
+          map.addOverlay(marker2);              // 将标注添加到地图中
 
-//    var pt = new BMap.Point(116.417, 39.909);
-//    var myIcon = new BMap.Icon("/icon/bus.png", new BMap.Size(100,100));
-//    var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
-//    map.addOverlay(marker2);
-
-    var point = new BMap.Point(<%=bus.longitude%>, <%=bus.latitude%>);
-    var marker = new BMap.Marker(point);
-    map.addOverlay(marker);
-
-    var label = new BMap.Label("我是文字标注哦", {offset: new BMap.Size(20, -10)});
-    marker.setLabel(label);
-
-    <%end%>
+//          var label = new BMap.Label("我是文字标注哦", {offset: new BMap.Size(20, -10)});
+//          marker.setLabel(label);
+        })
+      },
+      error: function () {
+        alert('error')
+      },
+      timeout: function () {
+        alert('time out')
+      }
+    });
   });
 
   Histogram.setOption({

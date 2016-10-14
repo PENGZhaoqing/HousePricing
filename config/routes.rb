@@ -16,6 +16,9 @@ Rails.application.routes.draw do
       get 'rollup'
       get 'filter'
     end
+    member do
+      get 'ajax'
+    end
   end
 
   resources :buses, only: [:create, :index] do
