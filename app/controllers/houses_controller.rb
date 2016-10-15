@@ -1,4 +1,5 @@
 class HousesController < ApplicationController
+  include HousesHelper
 
   def index
     @houses=House.search(search_params).paginate(:page => params[:page], :per_page => 20)

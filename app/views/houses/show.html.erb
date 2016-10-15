@@ -1,10 +1,3 @@
-<% def average(array)
-     sum = 0
-     array.each { |a| sum+=a.distance }
-     return sum/array.length
-   end
-%>
-
 <div class="row">
   <div class="col-lg-12">
     <h1 class="page-header">房屋周围</h1>
@@ -82,7 +75,7 @@
 
   var map = new BMap.Map("l-map");
   var house_point = new BMap.Point(<%=@house.longitude%>, <%=@house.latitude%>);
-  map.centerAndZoom(house_point, 16);
+  map.centerAndZoom(house_point, 15);
   var marker = new BMap.Marker(house_point);
   map.addOverlay(marker);
   marker.setAnimation(BMAP_ANIMATION_BOUNCE);
@@ -98,7 +91,7 @@
       url: link.attr('path'),
       dataType: 'json',
       success: function (data) {
-        map.centerAndZoom(house_point, 16);
+        map.centerAndZoom(house_point, 15);
         map.clearOverlays();
         var marker = new BMap.Marker(house_point);
         map.addOverlay(marker);
@@ -110,11 +103,21 @@
 //          map.addOverlay(marker);
           var maker_type = link.attr('path').split('?')[1].split('=')[1];
           var myIcon = new BMap.Icon("/icon/" + maker_type + ".png", new BMap.Size(30, 30));
-          var marker2 = new BMap.Marker(point, {icon: myIcon});  // 创建标注
-          map.addOverlay(marker2);              // 将标注添加到地图中
+          var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
+          map.addOverlay(marker);              // 将标注添加到地图中
 
-//          var label = new BMap.Label("我是文字标注哦", {offset: new BMap.Size(20, -10)});
-//          marker.setLabel(label);
+          var opts = {
+            width: 250,
+            height: 0,
+            title: item.name
+          };
+          var infoWindow = new BMap.InfoWindow("直线距离: " + item.distance + "米, 需要步行时间:" + parseFloat(item.distance / 50).toFixed(2) + "分", opts);
+          marker.addEventListener("mouseover", function () {
+            map.openInfoWindow(infoWindow, point); //开启信息窗口
+          });
+//          marker.addEventListener("mouseout", function () {
+//            map.closeInfoWindow(infoWindow, point);
+//          });
         })
       },
       error: function () {
@@ -189,13 +192,25 @@
           {
             name: '平均距离',
             type: 'line',
-            data: [<%=average(@house.buses)%>, <%=average(@house.works)%>, <%=average(@house.schools)%>, <%=average(@house.hospitals)%>, <%=average(@house.subways)%>, <%=average(@house.shops)%>]
+            data: [
+              <%=average(@house.buses)%>,
+              <%=average(@house.works)%>,
+              <%=average(@house.schools)%>,
+              <%=average(@house.hospitals)%>,
+              <%=average(@house.subways)%>,
+              <%=average(@house.shops)%>]
           },
           {
             name: '个数',
             type: 'bar',
             yAxisIndex: 1,
-            data: [<%=@house.bus_num%>, <%=@house.work_num%>, <%=@house.school_num%>, <%=@house.hospital_num%>, <%=@house.subway_num%>, <%=@house.shop_num%>]
+            data: [
+              <%=@house.bus_num%>,
+              <%=@house.work_num%>,
+              <%=@house.school_num%>,
+              <%=@house.hospital_num%>,
+              <%=@house.subway_num%>,
+              <%=@house.shop_num%>]
           }
         ]
       }
