@@ -45,7 +45,12 @@
         house_data.push(each_house);
       });
 
-      myChart.setOption(option = {
+      myChart.on('click', function (params) {
+        window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+//        window.location.href = "http://stackoverflow.com";
+      });
+
+      myChart.setOption({
         backgroundColor: '#404a59',
         title: {
           text: '北京房价总体图',
