@@ -41,12 +41,12 @@
       var house_data = [];
       $.each(data, function (index, house) {
         var each_house = [];
-        each_house.push(house.longitude, house.latitude, house.average_price / 1000);
+        each_house.push(house.longitude, house.latitude, house.id, house.average_price / 1000);
         house_data.push(each_house);
       });
 
       myChart.on('click', function (params) {
-        window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+        window.open("/houses/"+encodeURIComponent(params.value[2]));
 //        window.location.href = "http://stackoverflow.com";
       });
 
@@ -71,7 +71,7 @@
           orient: 'vertical',
           y: 'bottom',
           x: 'right',
-          data: ['pm2.5'],
+          data: ['价格'],
           textStyle: {
             color: '#fff'
           }
