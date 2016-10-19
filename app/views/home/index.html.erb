@@ -13,7 +13,7 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu pull-right" role="menu">
-          <li><a href="#">Action</a>
+          <li><%= link_to 'heatmap', root_path(chart_type: 'heatmap'), :method => :get %>
           </li>
           <li><a href="#">Another action</a>
           </li>
@@ -41,12 +41,12 @@
       var house_data = [];
       $.each(data, function (index, house) {
         var each_house = [];
-        each_house.push(house.longitude, house.latitude, house.id, house.average_price / 1000);
+        each_house.push(house.longitude, house.latitude, house.id, house.average_price / 10000, house.community, house.area, house.room_shape, house.floor, house.build_time, house.street, house.distance);
         house_data.push(each_house);
       });
 
       myChart.on('click', function (params) {
-        window.open("/houses/"+encodeURIComponent(params.value[2]));
+        window.open("/houses/" + encodeURIComponent(params.value[2]));
 //        window.location.href = "http://stackoverflow.com";
       });
 
@@ -62,9 +62,23 @@
           }
         },
         tooltip: {
+          padding: 10,
+          backgroundColor: '#222',
+          borderColor: '#777',
+          borderWidth: 1,
           trigger: 'item',
-          formatter: function (params) {
-            return params.value[2] / 10 + '万';
+          formatter: function (obj) {
+            var value = obj.value;
+            return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+                + value[4] + ': ' + value[3] + "万"
+                + '</div>'
+                + '面积: ' + value[5] + '<br>'
+                + '房型：' + value[6] + '<br>'
+                + '楼层：' + value[7] + '<br>'
+                + '建造时间：' + value[8] + '<br>'
+                + '地址：' + value[9] + '<br>'
+                + '距离天安门：' + value[10] + '<br>';
+
           }
         },
         legend: {
@@ -77,8 +91,14 @@
           }
         },
         visualMap: {
+          left: 'right',
+          bottom: '0%',
           min: 0,
-          max: 130,
+          max: 13,
+          dimension: 3,
+          precision: 0.1,
+          text: ['每平方米/万'],
+          textGap: 20,
           calculable: true,
           inRange: {
             color: ['#50a3ba', '#eac736', 'red']
@@ -90,7 +110,7 @@
 
         bmap: {
           center: [116.404, 39.915],
-          zoom: 12,
+          zoom: 11,
           roam: true,
           mapStyle: {
             'styleJson': [
@@ -236,6 +256,9 @@
             emphasis: {
               borderColor: '#fff',
               borderWidth: 1
+            },
+            normal: {
+              opacity: 0.8
             }
           }
         }]
