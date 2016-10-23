@@ -18,6 +18,17 @@
         <% end %>
       </li>
 
+
+      <li>
+        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 数据可视化 <span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+          <li><%= link_to '散点图', home_scatter_path, method: :get %></li>
+          <li> <%= link_to '热力图', home_heatmap_path, method: :get %></li>
+          <li> <%= link_to '堆叠条形图', home_bar_path, method: :get %></li>
+        </ul>
+      </li>
+
+
       <li>
         <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Data Extraction <span class="fa arrow"></span></a>
         <ul class="nav nav-second-level">

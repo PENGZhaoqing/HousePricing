@@ -1,9 +1,18 @@
 class HomeController < ApplicationController
 
   def index
-    if params[:chart_type]=='heatmap'
-      render 'home/heatmap'
-    end
+  end
+
+
+  def scatter
+
+  end
+
+  def bar
+
+  end
+
+  def heatmap
 
   end
 

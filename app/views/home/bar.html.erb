@@ -1,0 +1,229 @@
+</br>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <i class="fa fa-bar-chart-o fa-fw"></i> 距离随价格分布条状图
+  </div>
+  <div class="panel panel-body">
+    <div id="main" style="width: 800px;height:500px;"></div>
+  </div>
+</div>
+
+<script>
+  var myChart = echarts.init(document.getElementById('main'));
+
+  $.ajax({
+    type: "GET",
+    url: "/home/get_collection",
+    dataType: 'json',
+    success: function (data) {
+      var range = {};
+
+      range['one'] = {};
+      range['two'] = {};
+      range['three'] = {};
+      range['four'] = {};
+      range['five'] = {};
+
+      range['one']['one'] = 0;
+      range['one']['two'] = 0;
+      range['one']['three'] = 0;
+      range['one']['four'] = 0;
+      range['one']['five'] = 0;
+
+      range['two']['one'] = 0;
+      range['two']['two'] = 0;
+      range['two']['three'] = 0;
+      range['two']['four'] = 0;
+      range['two']['five'] = 0;
+
+      range['three']['one'] = 0;
+      range['three']['two'] = 0;
+      range['three']['three'] = 0;
+      range['three']['four'] = 0;
+      range['three']['five'] = 0;
+
+      range['four']['one'] = 0;
+      range['four']['two'] = 0;
+      range['four']['three'] = 0;
+      range['four']['four'] = 0;
+      range['four']['five'] = 0;
+
+      range['five']['one'] = 0;
+      range['five']['two'] = 0;
+      range['five']['three'] = 0;
+      range['five']['four'] = 0;
+      range['five']['five'] = 0;
+
+
+      $.each(data, function (index, house) {
+
+        if (house.distance <= 5000) {
+          if (house.average_price <= 30000) {
+            range['one']['five']++;
+          } else if (house.average_price > 30000 && house.average_price <= 60000) {
+            range['one']['four']++;
+          } else if (house.average_price > 60000 && house.average_price <= 90000) {
+            range['one']['three']++;
+          } else if (house.average_price > 90000 && house.average_price <= 120000) {
+            range['one']['two']++;
+          } else if (house.average_price > 120000) {
+            range['one']['one']++;
+          }
+
+        } else if (house.distance > 5000 && house.distance <= 10000) {
+          if (house.average_price <= 30000) {
+            range['two']['five']++;
+          } else if (house.average_price > 30000 && house.average_price <= 60000) {
+            range['two']['four']++;
+          } else if (house.average_price > 60000 && house.average_price <= 90000) {
+            range['two']['three']++;
+          } else if (house.average_price > 60000 && house.average_price <= 120000) {
+            range['two']['two']++;
+          } else if (house.average_price > 120000) {
+            range['two']['one']++;
+          }
+        }
+
+        else if (house.distance > 10000 && house.distance <= 15000) {
+          if (house.average_price <= 30000) {
+            range['three']['five']++;
+          } else if (house.average_price > 30000 && house.average_price <= 60000) {
+            range['three']['four']++;
+          } else if (house.average_price > 60000 && house.average_price <= 90000) {
+            range['three']['three']++;
+          } else if (house.average_price > 90000 && house.average_price <= 120000) {
+            range['three']['two']++;
+          } else if (house.average_price > 120000) {
+            range['three']['one']++;
+          }
+        }
+
+        else if (house.distance > 15000 && house.distance < 20000) {
+          if (house.average_price <= 30000) {
+            range['four']['five']++;
+          } else if (house.average_price > 30000 && house.average_price <= 60000) {
+            range['four']['four']++;
+          } else if (house.average_price > 60000 && house.average_price <= 90000) {
+            range['four']['three']++;
+          } else if (house.average_price > 90000 && house.average_price <= 120000) {
+            range['four']['two']++;
+          } else if (house.average_price > 120000) {
+            range['four']['one']++;
+          }
+        }
+
+        else if (house.distance > 20000) {
+          if (house.average_price <= 30000) {
+            range['five']['five']++;
+          } else if (house.average_price > 30000 && house.average_price <= 60000) {
+            range['five']['four']++;
+          } else if (house.average_price > 60000 && house.average_price <= 90000) {
+            range['five']['three']++;
+          } else if (house.average_price > 90000 && house.average_price <= 120000) {
+            range['five']['two']++;
+          } else if (house.average_price > 120000) {
+            range['five']['one']++;
+          }
+        }
+
+      });
+
+      myChart.setOption({
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        legend: {
+          data: ['大于12万', '9万-12万', '6万-9万', '3万-6万', '小于3万']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'value'
+        },
+        yAxis: {
+          type: 'category',
+          data: ['0-5000米', '5000-10000米', '10000-15000米', '15000-20000米', '20000-25000米', '25000-40000米']
+        },
+        series: [
+          {
+            name: '大于12万',
+            type: 'bar',
+            stack: '总量',
+            label: {
+              normal: {
+                show: true,
+                position: 'inside'
+              }
+            },
+            data: [range['one']['one'], range['two']['one'], range['three']['one'], range['four']['one'], range['five']['one']]
+          },
+          {
+            name: '9万-12万',
+            type: 'bar',
+            stack: '总量',
+            label: {
+              normal: {
+                show: true,
+                position: 'inside'
+              }
+            },
+            data: [range['one']['two'], range['two']['two'], range['three']['two'], range['four']['two'], range['five']['two']]
+          },
+          {
+            name: '6万-9万',
+            type: 'bar',
+            stack: '总量',
+            label: {
+              normal: {
+                show: true,
+                position: 'inside'
+              }
+            },
+            data: [range['one']['three'], range['two']['three'], range['three']['three'], range['four']['three'], range['five']['three']]
+          },
+          {
+            name: '3万-6万',
+            type: 'bar',
+            stack: '总量',
+            label: {
+              normal: {
+                show: true,
+                position: 'inside'
+              }
+            },
+            data: [range['one']['four'], range['two']['four'], range['three']['four'], range['four']['four'], range['five']['four']]
+          },
+          {
+            name: '小于3万',
+            type: 'bar',
+            stack: '总量',
+            label: {
+              normal: {
+                show: true,
+                position: 'inside'
+              }
+            },
+            data: [range['one']['five'], range['two']['five'], range['three']['five'], range['four']['five'], range['five']['five']]
+          }
+        ]
+      })
+      ;
+    },
+    error: function () {
+      alert('error')
+    },
+    timeout: function () {
+      alert('time out')
+    }
+  });
+
+</script>
+
+
