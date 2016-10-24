@@ -1,8 +1,4 @@
-<div class="row">
-  <div class="col-lg-12">
-    <h1 class="page-header">总体分布散点图</h1>
-  </div>
-</div>
+</br>
 <div class="panel panel-default">
   <div class="panel-heading">
     <i class="fa fa-bar-chart-o fa-fw"></i> Bar Chart Example
@@ -31,11 +27,15 @@
 
 <script>
   var myChart = echarts.init(document.getElementById('main'));
+
+
   $.ajax({
     type: "GET",
     url: "/home/get_collection",
     dataType: 'json',
     success: function (data) {
+      myChart.hideLoading();
+
       var house_data = [];
       $.each(data, function (index, house) {
         var each_house = [];

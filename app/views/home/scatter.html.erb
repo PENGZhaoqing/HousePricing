@@ -51,6 +51,7 @@
       });
 
       myChart.setOption({
+        animationThreshold: 5000,
         title: {
           text: '附近基础设施散点图',
           link: '/houses'
@@ -121,32 +122,43 @@
           {
             name: '公交',
             type: 'scatter',
+            large: true,
+            symbolSize: 6,
             data: bus_price
           },
           {
             name: '地铁',
             type: 'scatter',
+            large: true,
+            symbolSize: 6,
             data: subway_price
           },
           {
             name: '学校',
             type: 'scatter',
+            large: true,
+            symbolSize: 6,
             data: school_price
           },
-
           {
             name: '医院',
             type: 'scatter',
+            large: true,
+            symbolSize: 6,
             data: hospital_price
           },
           {
             name: '写字楼',
             type: 'scatter',
+            large: true,
+            symbolSize: 6,
             data: work_price
           },
           {
             name: '商场',
             type: 'scatter',
+            large: true,
+            symbolSize: 6,
             data: shop_price
           }
         ]

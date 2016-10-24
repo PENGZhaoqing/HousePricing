@@ -1,82 +1,97 @@
-<div class="container-fluid">
-  <div class="row">
+<div class="row">
+  <div class="col-lg-12">
+    <h2 class="page-header">收集房屋坐标和与天安门距离: </h2>
+  </div>
+</div>
 
-    <div class="col-sm-4">
+<div class="row">
 
-      <div class="row">
-        <div class="col-sm-12">
-          <h3 class="text-muted text-center">补全数据</h3>
-          <hr>
+  <div class="col-sm-4">
 
-          <form class="form-horizontal">
-            <%#= select_tag "data_type", options_for_select(["公交车站", "商场", "学校", "地铁站", "写字楼", "医院"], "公交车站"), class: "form-control" %>
-            <%= hidden_field_tag "post_url", post_url %>
-            <%= hidden_field_tag "get_url", get_url %>
+    <div class="row">
+      <div class="col-sm-12">
 
-            <div class="form-group">
-              <label class="col-sm-4 control-label">刷新频率</label>
-              <div class="col-sm-8">
-                <%= select_tag "time_interval", options_for_select([0, 10, 100, 200, 500, 1000, 2000], 100), class: "form-control" %>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <i class="fa fa-bell fa-fw"></i>控制面板
+          </div>
+          <div class="panel-body">
+
+            <form class="form-horizontal">
+              <%#= select_tag "data_type", options_for_select(["公交车站", "商场", "学校", "地铁站", "写字楼", "医院"], "公交车站"), class: "form-control" %>
+              <%= hidden_field_tag "post_url", post_url %>
+              <%= hidden_field_tag "get_url", get_url %>
+
+              <div class="form-group">
+                <label class="col-sm-4 control-label">刷新频率</label>
+                <div class="col-sm-8">
+                  <%= select_tag "time_interval", options_for_select([0, 10, 100, 200, 500, 1000, 2000], 100), class: "form-control" %>
+                </div>
               </div>
-            </div>
 
-            <button class="btn btn-success btn-block">开始</button>
+              <button class="btn btn-success btn-block">开始</button>
 
-          </form>
+            </form>
+            <button class="btn btn-danger btn-block" onclick="flag=true;" style="margin-top: 10px">暂停</button>
 
-          <button class="btn btn-danger btn-block" onclick="flag=true;" style="margin-top: 10px">暂停</button>
+          </div>
         </div>
+
       </div>
+    </div>
 
-      <hr>
+    <div class="row">
 
-      <div class="row">
+      <div class="col-sm-12">
 
-        <div class="col-sm-12">
+        <!--<div class="progress">-->
+        <!--<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="70"-->
+        <!--aria-valuemin="0" aria-valuemax="100" style="width:70%">-->
+        <!--70%-->
+        <!--</div>-->
+        <!--</div>-->
 
-          <!--<div class="progress">-->
-          <!--<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="70"-->
-          <!--aria-valuemin="0" aria-valuemax="100" style="width:70%">-->
-          <!--70%-->
-          <!--</div>-->
-          <!--</div>-->
-
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              当前房屋信息:
-            </div>
-            <div class="panel-body">
-              <table>
-                <tr>
-                  <td style="width: 30%">ID:</td>
-                  <td id="id"></td>
-                </tr>
-                <tr>
-                  <td style="width: 30%">小区:</td>
-                  <td id="community"></td>
-                </tr>
-                <tr>
-                  <td style="width: 20%">地址:</td>
-                  <td id="street"></td>
-                </tr>
-                <tr>
-                  <td style="width: 40%">距离市中心:</td>
-                  <td id="distance"></td>
-                </tr>
-              </table>
-            </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            当前房屋信息:
+          </div>
+          <div class="panel-body">
+            <table>
+              <tr>
+                <td style="width: 30%">ID:</td>
+                <td id="id"></td>
+              </tr>
+              <tr>
+                <td style="width: 30%">小区:</td>
+                <td id="community"></td>
+              </tr>
+              <tr>
+                <td style="width: 20%">地址:</td>
+                <td id="street"></td>
+              </tr>
+              <tr>
+                <td style="width: 40%">距离市中心:</td>
+                <td id="distance"></td>
+              </tr>
+            </table>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-
-    <div class="col-sm-8">
-      <div id="l-map" style="height: 500px;width: 100%">
+  <div class="col-sm-8">
+    <div class="panel panel-default">
+      <div class="panel-heading">百度地图API
+      </div>
+      <div class="panel-body">
+        <div id="l-map" style="height: 400px;width: 100%">
+        </div>
       </div>
     </div>
 
   </div>
+
 </div>
 
 <script type="text/javascript">
@@ -99,7 +114,7 @@
   //    fillOpacity: 0.1,
   //    strokeOpacity: 0.3
   //  });
-//  map.addOverlay(circle);
+  //  map.addOverlay(circle);
 
   $('form').submit(function () {
     var params = $(this).serializeArray();

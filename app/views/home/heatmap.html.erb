@@ -16,6 +16,8 @@
     url: "/home/get_collection",
     dataType: 'json',
     success: function (data) {
+      myChart.hideLoading();
+
       $.each(data, function (index, house) {
         var each_house = [];
         each_house.push(house.longitude, house.latitude);

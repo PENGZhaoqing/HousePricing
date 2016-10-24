@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get 'home/scatter'
   get 'home/bar'
   get 'home/heatmap'
+  get 'home/normal_map'
 
   resources :houses, only: [:create, :index, :show] do
     collection do

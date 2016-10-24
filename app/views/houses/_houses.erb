@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-lg-12">
-    <h1 class="page-header">Dashboard</h1>
+    <h1 class="page-header">数据列表</h1>
   </div>
 </div>
 
@@ -9,43 +9,26 @@
     <text class="panel-title">二手房数据</text>
     <div class="pull-right">
       <%= link_to "整合周边数据", rollup_houses_path, class: "btn btn-primary btn-xs" %>
-      <%= link_to "删除无坐标数据", filter_houses_path, class: "btn btn-danger btn-xs" %>
+      <%= link_to "删除无坐标数据", filter_houses_path, class: "btn btn-danger btn-xs", style: "margin-right:5px;" %>
+      <%= form_tag export_houses_path(:format => :csv), :method => :get, class: "pull-right" do %>
+          <%= hidden_field_tag :query, params[:query] %>
+          <%= button_tag(type: "submit", class: "btn btn-success btn-xs") do %>
+              <span class="glyphicon glyphicon-floppy-save"></span> 导出
+          <% end %>
+      <% end %>
     </div>
   </div>
   <div class="panel-body" style="min-height:750px">
 
-    <div class="row">
-
-      <div class="col col-sm-6">
-        <% unless params[:query].blank? %>
+    <% unless params[:query].blank? %>
+        <div class="row">
+          <div class="col col-sm-6">
             <text class="text-danger">搜索结果显示:
               <mark><%= params[:query] %></mark>
             </text>
-        <% end %>
-      </div>
-
-      <div class="col col-sm-1 pull-right">
-        <%= form_tag export_houses_path(:format => :csv), :method => :get, class: "pull-right" do %>
-            <%= hidden_field_tag :query, params[:query] %>
-            <%= button_tag(type: "submit", class: "btn btn-success btn-sm") do %>
-                <span class="glyphicon glyphicon-floppy-save"></span> 导出
-            <% end %>
-        <% end %>
-      </div>
-
-      <div class="col col-sm-3 pull-right">
-        <%= form_tag houses_path, method: 'get', role: "search" do %>
-            <div class="input-group">
-              <%= text_field_tag 'query', params[:query], class: "form-control input-sm", placeholder: "关键字" %>
-              <div class="input-group-btn">
-                <button class="btn btn-default btn-sm" type="submit"><i class="glyphicon glyphicon-search"></i>
-                </button>
-              </div>
-            </div>
-        <% end %>
-      </div>
-
-    </div>
+          </div>
+        </div>
+    <% end %>
 
     <hr>
 

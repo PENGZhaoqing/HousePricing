@@ -1,0 +1,93 @@
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <i class="fa fa-bar-chart-o fa-fw"></i> Bar Chart Example
+    <div class="pull-right">
+      <div class="btn-group">
+        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+          Actions
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu pull-right" role="menu">
+          <li><a href="#">Another action</a>
+          </li>
+          <li><a href="#">Something else here</a>
+          </li>
+          <li class="divider"></li>
+          <li><a href="#">Separated link</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-body">
+    <div id="main" style="width: 800px;height:500px;"></div>
+  </div>
+</div>
+<script src="/beijing.js"></script>
+
+<script>
+  var myChart = echarts.init(document.getElementById('main'));
+  var interval=25;
+  var house_data = [];
+
+  $.ajax({
+    type: "GET",
+    url: "/home/get_collection",
+    dataType: 'json',
+    success: function (data) {
+      myChart.hideLoading();
+      var new_array=[];
+      $.each(data, function (index, house) {
+        house_data.push(house.average_price / 1000);
+        
+      });
+
+      myChart.setOption({
+        color: ['#3398DB'],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            axisTick: {
+              alignWithLabel: true
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '直接访问',
+            type: 'bar',
+            barWidth: '60%',
+            data: [10, 52, 200, 334, 390, 330, 220]
+          }
+        ]
+      })
+
+    }, error: function () {
+      alert('error')
+    }, timeout: function () {
+      alert('time out')
+    }
+  });
+
+</script>
+
+

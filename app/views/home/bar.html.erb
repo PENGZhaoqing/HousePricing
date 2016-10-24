@@ -16,6 +16,8 @@
     url: "/home/get_collection",
     dataType: 'json',
     success: function (data) {
+      myChart.hideLoading();
+
       var range = {};
 
       range['one'] = {};
