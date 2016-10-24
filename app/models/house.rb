@@ -9,10 +9,54 @@ class House < ActiveRecord::Base
 
   def self.search(query)
     unless query.blank?
-      houses=House.where('community LIKE :search OR street LIKE :search OR floor LIKE :search OR room_shape LIKE :search', search: "%#{query}%")
-      # houses=houses.where('build_time = ?', query).where('area = ?', query)
+      houses=House.where('community LIKE :search OR street LIKE :search OR floor LIKE :search OR room_shape LIKE :search OR build_time = :search_i OR area = :search_i', search: "%#{query}%", search_i: query)
     else
       houses= House.all
+    end
+
+    return houses
+  end
+
+
+  def self.filter(params)
+
+    unless params[:price].blank?
+      min=(params[:price].to_f-1.5)*10000
+      max=(params[:price].to_f+1.5)*10000
+      houses=House.where('average_price > :min AND average_price < :max', min: min, max: max)
+    end
+
+    unless params[:area].blank?
+      min=params[:area].to_i-20
+      max=params[:area].to_i+20
+      houses=House.where('area > :min AND area < :max', min: min, max: max) if houses.nil?
+      houses=houses.where('area > :min AND area < :max', min: min, max: max)
+    end
+
+    unless params[:distance].blank?
+      min=(params[:distance].to_f-1)*1000
+      max=(params[:distance].to_i+1)*1000
+      houses=House.where('distance > :min AND distance < :max', min: min, max: max) if houses.nil?
+      houses=houses.where('distance > :min AND distance < :max', min: min, max: max)
+    end
+
+    unless params[:build_time].blank?
+      houses=House.where('build_time = :search', search: params[:build_time]) if houses.nil?
+      houses=houses.where('build_time = :search', search: params[:build_time])
+    end
+
+    unless params[:room_shape].blank?
+      houses=House.where('room_shape LIKE :search', search: params[:room_shape]) if houses.nil?
+      houses=houses.where('room_shape LIKE :search', search: params[:room_shape])
+    end
+
+    unless params[:street].blank?
+      houses=House.where('street LIKE :search', search: "%#{params[:street]}%") if houses.nil?
+      houses=houses.where('street LIKE :search', search: "%#{params[:street]}%")
+    end
+
+    unless houses.nil?
+      houses=House.all
     end
 
     return houses
@@ -25,7 +69,7 @@ class House < ActiveRecord::Base
       csv << attributes
 
       House.all.each do |house|
-        csv << attributes.map{ |attr| house.send(attr) }
+        csv << attributes.map { |attr| house.send(attr) }
       end
     end
   end

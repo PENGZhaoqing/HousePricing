@@ -22,9 +22,11 @@
 
     <% unless params[:query].blank? %>
         <div class="row">
-          <text class="text-danger">搜索结果显示:
-            <mark><%= params[:query] %></mark>
-          </text>
+          <div class="col-sm-12">
+            <text class="text-danger">搜索结果显示:
+              <mark><%= params[:query] %></mark>
+            </text>
+          </div>
         </div>
         <hr>
     <% end %>

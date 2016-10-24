@@ -5,7 +5,7 @@
 
         <%= form_tag houses_path, method: 'get', role: "search" do %>
             <div class="input-group">
-              <%= text_field_tag 'query', params[:query], class: "form-control inpu", placeholder: "关键字" %>
+              <%= text_field_tag 'query', params[:query], class: "form-control inpu", placeholder: "搜索关键字" %>
               <div class="input-group-btn">
                 <button class="btn btn-default btn" type="submit"><i class="glyphicon glyphicon-search"></i>
                 </button>
