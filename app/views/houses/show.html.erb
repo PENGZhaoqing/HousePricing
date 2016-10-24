@@ -1,6 +1,63 @@
 <div class="row">
   <div class="col-lg-12">
-    <h1 class="page-header">房屋周围</h1>
+    <h2 class="page-header"><%= @house.community %></h2>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <i class="fa fa-info-circle fa-fw"></i> 基本信息
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-4 col-lg-4 " align="center">
+        <img src="http://placehold.it/280x200">
+      </div>
+      <div class=" col-md-8 col-lg-8 ">
+        <table class="table">
+          <tbody>
+          <tr>
+            <td style="width: 15%">小区名:</td>
+            <td><%= @house.community %></td>
+            <td style="width: 15%">面积:</td>
+            <td><%= @house.area %>平方米</td>
+          </tr>
+          <tr>
+            <td>房型:</td>
+            <td><%= @house.room_shape %></td>
+            <td>楼层:</td>
+            <td><%= @house.floor %></td>
+          </tr>
+          <tr>
+            <td>建造时间:</td>
+            <td><%= @house.build_time %>年</td>
+            <td>距离市中心:</td>
+            <td><%= @house.distance/1000.to_f %>千米</td>
+          </tr>
+          <tr>
+            <td>每平米:</td>
+            <td><%= @house.average_price/10000.to_f %>万</td>
+            <td>总价:</td>
+            <td><%= @house.average_price*@house.area/10000 %>万</td>
+          </tr>
+          <tr>
+            <td>地址:</td>
+            <td colspan=3><%= @house.street %></td>
+          </tr>
+          <tr>
+            <td>数据来源:</td>
+            <td><%= link_to "安居客二手房交易市场", @house.url %></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <h2 class="page-header">周边基础设施</h2>
   </div>
 </div>
 
@@ -102,7 +159,7 @@
 //          var marker = new BMap.Marker(point);
 //          map.addOverlay(marker);
           var maker_type = link.attr('path').split('?')[1].split('=')[1];
-          var myIcon = new BMap.Icon("/icon/" + maker_type + ".png", new BMap.Size(30, 30));
+          var myIcon = new BMap.Icon("/icon/" + maker_type + ".png", new BMap.Size(25, 25));
           var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
           map.addOverlay(marker);              // 将标注添加到地图中
 
@@ -255,16 +312,16 @@
   radar_chart.setOption({
     tooltip: {},
     legend: {
-      data: ['综合评定']
+      data: ['综合得分']
     },
     radar: {
       // shape: 'circle',
       indicator: [
         {name: '生活', max: 20},
-        {name: '交通', max: 20},
-        {name: '工作', max: 20},
-        {name: '教育', max: 20},
-        {name: '环境', max: 20}
+        {name: '交通', max: 40},
+        {name: '工作', max: 40},
+        {name: '教育', max: 40},
+        {name: '医疗', max: 40}
       ]
     },
     series: [{
@@ -272,17 +329,21 @@
       // areaStyle: {normal: {}},
       data: [
         {
-          value: [evaluate(<%=@house.shop_num%>, <%=average(@house.shops)%>), evaluate(<%=@house.bus_num%>, <%=average(@house.works)%>), evaluate(<%=@house.work_num%>, <%=average(@house.shops)%>), evaluate(<%=@house.school_num%>, <%=average(@house.schools)%>), 15],
-          name: '综合评定'
+          value: [evaluate(<%=@house.shop_num%>, <%=average(@house.shops)%>),
+            evaluate(<%=@house.bus_num%>, <%=average(@house.works)%>) + evaluate(<%=@house.subway_num*10%>, <%=average(@house.subways)%>),
+            evaluate(<%=@house.work_num%>, <%=average(@house.shops)%>),
+            evaluate(<%=@house.school_num%>, <%=average(@house.schools)%>),
+            evaluate(<%=@house.hospital_num%>, <%=average(@house.hospitals)%>)],
+          name: '综合得分'
         }
       ]
     }]
   });
 
   function evaluate(num, distance) {
-    var result = (distance + 500) / 2000 * num;
-    if (result > 20) {
-      result = 20
+    var result = num - distance / 2000;
+    if (result > 40) {
+      result = 40;
     }
     return result;
   }

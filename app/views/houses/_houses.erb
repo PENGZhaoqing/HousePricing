@@ -6,7 +6,7 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <text class="panel-title">二手房数据</text>
+    <text class="panel-title">汇总数据</text>
     <div class="pull-right">
       <%= link_to "整合周边数据", rollup_houses_path, class: "btn btn-primary btn-xs" %>
       <%= link_to "删除无坐标数据", filter_houses_path, class: "btn btn-danger btn-xs", style: "margin-right:5px;" %>
@@ -22,15 +22,12 @@
 
     <% unless params[:query].blank? %>
         <div class="row">
-          <div class="col col-sm-6">
-            <text class="text-danger">搜索结果显示:
-              <mark><%= params[:query] %></mark>
-            </text>
-          </div>
+          <text class="text-danger">搜索结果显示:
+            <mark><%= params[:query] %></mark>
+          </text>
         </div>
+        <hr>
     <% end %>
-
-    <hr>
 
     <table class="table table-responsive table-condensed table-hover">
       <thead>
@@ -58,7 +55,7 @@
       <% @houses.each do |house| %>
           <tr>
             <td>
-              <text style="font-size: small"><%= link_to "#{house.community}", house_path(house) %></text>
+              <text style="font-size: small"><%= link_to "#{house.community}", house_path(house), method: :get %></text>
             </td>
 
             <td>

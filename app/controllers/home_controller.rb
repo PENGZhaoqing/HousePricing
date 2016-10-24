@@ -15,10 +15,6 @@ class HomeController < ApplicationController
 
   end
 
-  def normal_map
-
-  end
-
   def get_collection
     houses=House.where.not('houses.latitude' => nil).where.not('houses.longitude' => nil).where('houses.distance < 80000')
     respond_to do |format|

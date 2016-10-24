@@ -21,6 +21,12 @@
         <% end %>
       </li>
 
+      <li><%= link_to houses_path, method: :get do %>
+            <i class="fa fa-table fa-fw"></i> 数据列表
+        <% end %>
+      </li>
+
+
 
       <li>
         <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 数据可视化 <span class="fa arrow"></span></a>
@@ -34,22 +40,20 @@
 
 
       <li>
-        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 数据抓取 <span class="fa arrow"></span></a>
+        <a href="#"><i class="fa fa-map-marker fa-fw"></i> 数据抓取 <span class="fa arrow"></span></a>
         <ul class="nav nav-second-level">
-          <li><%= link_to "公交车站", buses_path, method: :get %></li>
-          <li> <%= link_to "医院", hospitals_path, method: :get %></li>
-          <li> <%= link_to "学校", schools_path, method: :get %></li>
-          <li> <%= link_to "地铁站", subways_path, method: :get %></li>
-          <li> <%= link_to "商场", shops_path, method: :get %></li>
-          <li> <%= link_to "写字楼", works_path, method: :get %></li>
-          <li> <%= link_to "房屋坐标", collect_houses_path, method: :get %></li>
-        </ul>
-      </li>
-
-      <li>
-        <a href="#"><i class="fa fa-table fa-fw"></i> 房屋数据<span class="fa arrow"></span></a>
-        <ul class="nav nav-second-level">
-          <li><%= link_to "数据列表", houses_path, method: :get %></li>
+          <li>
+            <a href="#">周边基础设施数据 <span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+              <li><%= link_to "公交车站", buses_path, method: :get %></li>
+              <li> <%= link_to "医院", hospitals_path, method: :get %></li>
+              <li> <%= link_to "学校", schools_path, method: :get %></li>
+              <li> <%= link_to "地铁站", subways_path, method: :get %></li>
+              <li> <%= link_to "商场", shops_path, method: :get %></li>
+              <li> <%= link_to "写字楼", works_path, method: :get %></li>
+            </ul>
+          </li>
+          <li> <%= link_to "房屋坐标数据", collect_houses_path, method: :get %></li>
         </ul>
       </li>
 
