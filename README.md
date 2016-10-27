@@ -2,7 +2,7 @@
 
 HousePricing旨在提供房价的可视化预测，帮助用户更好的评估房产和预测未来的价格
 
-- 目前应用已上线，请点击[这里](http://house-pricing.herokuapp.com/)访问，因为挂在免费的Heroku服务器中，第一次加载可能会很慢，请耐心等待
+- 第一版已上线，请点击[这里](http://house-pricing.herokuapp.com/)访问，因为挂在免费的Heroku服务器中，第一次加载可能会很慢，请耐心等待
 
 **如果觉得好，请给项目点颗星来支持吧～～** 
 
