@@ -10,12 +10,25 @@
     <div class="pull-right">
       <%= link_to "整合周边数据", rollup_houses_path, class: "btn btn-primary btn-xs" %>
       <%= link_to "删除无坐标数据", filter_houses_path, class: "btn btn-danger btn-xs", style: "margin-right:5px;" %>
-      <%= form_tag export_houses_path(:format => :csv), :method => :get, class: "pull-right" do %>
+      <%= form_tag export_houses_path(:format => :csv), :method => :get, class: "pull-right", style: "margin-right:5px;" do %>
           <%= hidden_field_tag :query, params[:query] %>
           <%= button_tag(type: "submit", class: "btn btn-success btn-xs") do %>
               <span class="glyphicon glyphicon-floppy-save"></span> 导出
           <% end %>
       <% end %>
+
+      <%#= form_tag export_buses_path(:format => :csv), :method => :get, class: "pull-right", style: "margin-right:5px;" do %>
+          <%#= button_tag(type: "submit", class: "btn btn-success btn-xs") do %>
+              <!--<span class="glyphicon glyphicon-floppy-save"></span> 导出公交数据-->
+          <%# end %>
+      <%# end %>
+
+      <%#= form_tag export_asso_buses_path(:format => :csv), :method => :get, class: "pull-right", style: "margin-right:5px;" do %>
+          <%#= button_tag(type: "submit", class: "btn btn-success btn-xs") do %>
+              <!--<span class="glyphicon glyphicon-floppy-save"></span> 导出房屋公交数据-->
+          <%# end %>
+      <%# end %>
+
     </div>
   </div>
   <div class="panel-body" style="min-height:750px">

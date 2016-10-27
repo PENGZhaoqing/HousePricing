@@ -55,7 +55,7 @@ class House < ActiveRecord::Base
       houses=houses.where('street LIKE :search', search: "%#{params[:street]}%")
     end
 
-    unless houses.nil?
+    if houses.nil? or houses.blank?
       houses=House.all
     end
 
@@ -73,6 +73,7 @@ class House < ActiveRecord::Base
       end
     end
   end
+
 
 
 end

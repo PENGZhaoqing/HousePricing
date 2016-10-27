@@ -21,6 +21,8 @@ Rails.application.routes.draw do
 
   resources :buses, only: [:create, :index] do
     collection do
+      get 'export'
+      get 'export_asso'
       get 'ajax'
     end
   end

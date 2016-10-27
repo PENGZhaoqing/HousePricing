@@ -67,6 +67,8 @@
 <script>
   var myChart = echarts.init(document.getElementById('main'));
 
+  draw();
+
   $('form').submit(function () {
     var params = $(this).serializeArray();
     var price = params[0].value;
@@ -78,6 +80,7 @@
     draw(price, area, room_shape, build_time, street, distance);
     return false; // prevents normal behaviour
   });
+
 
   function reset() {
     draw();
@@ -91,7 +94,6 @@
       dataType: 'json',
       success: function (data) {
         myChart.hideLoading();
-
         var house_data = [];
         $.each(data, function (index, house) {
           var each_house = [];

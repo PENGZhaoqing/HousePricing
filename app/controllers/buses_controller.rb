@@ -17,7 +17,6 @@ class BusesController < ApplicationController
     end
   end
 
-
   def index
     render 'shared/index', :locals => {:post_url => buses_path, :get_url => ajax_buses_path, :keyword => '公交车站'}
   end
@@ -39,6 +38,18 @@ class BusesController < ApplicationController
       end
     end
     render json: params.as_json
+  end
+
+  def export
+    respond_to do |format|
+      format.csv { send_data Bus.to_csv, filename: "buses-#{Date.today}.csv" }
+    end
+  end
+
+  def export_asso
+    respond_to do |format|
+      format.csv { send_data BusesHouses.to_csv, filename: "buses_houses-#{Date.today}.csv" }
+    end
   end
 
 
