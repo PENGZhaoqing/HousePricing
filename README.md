@@ -34,11 +34,10 @@ HousePricing旨在提供房价的可视化预测，帮助人们更好的评估�
 
 2. 数据挖掘中的1.1部分由[scrapy-hoursepricing](https://github.com/PENGZhaoqing/scrapy-hoursepricing)实现，这个应用是由Scrapy爬虫框架开发（Python），能够轻松实现对房价网站中的信息进行抓取，抓取后的数据将存为json格式，然后由HousePricing进行解析并储存在数据库中。
 
-## 目前进展
+## 目前进展(更新)
 
-1. 数据挖掘部分几乎完成，现在的HousePricing能够对需要的数据进行提取，只是提取数据需要花一些时间（in doing）
-2. 考虑下一步使用的模型和算法
-3. 能够对现有的数据进行部分可视化，例如所有房价信息的散点图
+1. 数据提取完成，现在的HousePricing能够对需要的数据进行提取，需要管理员权限（如果是自己想跑源码的，可以自行提取）
+2. 下一步考虑加上相似房屋推荐功能和价格预测功能，然后数据可视化需要更多的表示方法
 
 ## 截图
 
@@ -57,5 +56,20 @@ HousePricing旨在提供房价的可视化预测，帮助人们更好的评估�
 现有的一些字段以及字段之间的关联如下：
 
 <img src="/lib/data_type.png" width="700">
+
+## 使用
+
+由rails框架开发，请自行安装相关环境，fork此项目
+
+
+```
+git clone your_forked_project
+cd project_path
+bundle install
+rake db:migrate
+rake db:seed
+```
+
+在浏览器中输入`localhost:3000`，即可访问主页
 
 
