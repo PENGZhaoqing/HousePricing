@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161009123217) do
+ActiveRecord::Schema.define(version: 20161027095326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -144,6 +144,17 @@ ActiveRecord::Schema.define(version: 20161009123217) do
   add_index "subways", ["latitude"], name: "index_subways_on_latitude", using: :btree
   add_index "subways", ["longitude"], name: "index_subways_on_longitude", using: :btree
   add_index "subways", ["name"], name: "index_subways_on_name", using: :btree
+
+  create_table "users", force: :cascade do |t|
+    t.string   "name"
+    t.string   "email"
+    t.string   "password_digest"
+    t.boolean  "admin",           default: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
 
   create_table "works", force: :cascade do |t|
     t.string   "name"

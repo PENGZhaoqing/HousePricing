@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   get 'home/bar'
   get 'home/heatmap'
 
+  post 'sessions/login' => 'sessions#create'
+  delete 'sessions/logout' => 'sessions#destroy'
+
   resources :houses, only: [:create, :index, :show] do
     collection do
       get 'collect'

@@ -7,7 +7,22 @@
   <div class="collapse navbar-collapse">
     <ul class="nav navbar-top-links navbar-right">
 
-      <li> <%= link_to "Github", 'https://github.com/PENGZhaoqing/HousePricing' %></li>
+      <% if current_user.nil? %>
+          <li>
+            <button type="button" id="login_panel" class="btn btn-link navbar-btn">
+              <span class="glyphicon glyphicon-log-in"></span> 登录
+            </button>
+          </li>
+
+      <% else %>
+          <li>
+            <%= link_to sessions_logout_path, method: :delete do %>
+                退出 <span class="	glyphicon glyphicon-off"></span>
+            <% end %>
+          </li>
+      <% end %>
+
+      <li> <%= link_to "Github源码", 'https://github.com/PENGZhaoqing/HousePricing' %></li>
 
     </ul>
     <%= render 'layouts/navside' %>
@@ -15,6 +30,6 @@
 </nav>
 
 
-
+<%= render "layouts/login_panel" %>
 
 

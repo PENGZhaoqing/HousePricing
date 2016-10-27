@@ -1,5 +1,7 @@
 class HospitalsController < ApplicationController
 
+  before_action :login, only: [:ajax]
+
   @@hospital=0
 
   def ajax
@@ -39,4 +41,13 @@ class HospitalsController < ApplicationController
     end
     render json: params.as_json
   end
+
+  private
+
+  def login
+    if current_user.nil?
+      redirect_to root_path, flash: {:warning => "只有管理员能进行此操作喔"}
+    end
+  end
+
 end

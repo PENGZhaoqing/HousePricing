@@ -1,0 +1,58 @@
+<!-- Modal -->
+<div class="modal fade" id="panel_modal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" style="padding:35px 30px;">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4><span class="glyphicon glyphicon-lock"></span> 登录</h4>
+      </div>
+      <div class="modal-body" style="padding:40px 30px;">
+
+        <%= form_for(:session, url: sessions_login_path, method: :post, html: {role: 'form'}) do |f| %>
+
+            <div class="form-group">
+              <%= f.label :rand_code, "账号密码登陆" %>
+              <div class="input-group">
+                <div class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></div>
+                <%= f.email_field :email, class: 'form-control', placeholder: "输入邮箱" %>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+                <%= f.password_field :password, class: 'form-control', placeholder: "输入密码" %>
+              </div>
+            </div>
+
+            <%= button_tag(type: "submit", class: "btn btn-success btn-block") do %>
+                <span class="glyphicon glyphicon-off"></span>登陆
+            <% end %>
+
+        <% end %>
+
+      </div>
+
+      <div class="modal-footer">
+        <p>没有账号?
+          <%= link_to "那也没有办法,因为还没开放注册,只有管理员能登录喔", root_path %>
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  $(document).ready(function () {
+    $("#login_panel").click(function () {
+      $("#panel_modal").modal();
+    });
+  });
+
+</script>
+

@@ -1,5 +1,7 @@
 class BusesController < ApplicationController
 
+  before_action :login, only: [:ajax,:export,:export_asso]
+
   @@bus_id=0
 
   def ajax
@@ -49,6 +51,14 @@ class BusesController < ApplicationController
   def export_asso
     respond_to do |format|
       format.csv { send_data BusesHouses.to_csv, filename: "buses_houses-#{Date.today}.csv" }
+    end
+  end
+
+  private
+
+  def login
+    if current_user.nil?
+      redirect_to root_path, flash: {:warning => "只有管理员能进行此操作喔"}
     end
   end
 

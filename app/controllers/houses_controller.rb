@@ -1,5 +1,7 @@
 class HousesController < ApplicationController
-  include HousesHelper
+
+
+  before_action :login, only: [:filter, :rollup, :export,:get_each]
 
   def index
     @houses=House.search(search_params).paginate(:page => params[:page], :per_page => 20)
@@ -65,12 +67,12 @@ class HousesController < ApplicationController
   def ajax
     house=House.find_by_id(params[:id])
 
-    data=house.buses  if params[:data]=='bus'
-    data=house.works  if params[:data]=='work'
-    data=house.hospitals  if params[:data]=='hospital'
-    data=house.subways  if params[:data]=='subway'
-    data=house.shops  if params[:data]=='shop'
-    data=house.schools  if params[:data]=='school'
+    data=house.buses if params[:data]=='bus'
+    data=house.works if params[:data]=='work'
+    data=house.hospitals if params[:data]=='hospital'
+    data=house.subways if params[:data]=='subway'
+    data=house.shops if params[:data]=='shop'
+    data=house.schools if params[:data]=='school'
 
     respond_to do |format|
       format.json { render :json => data }
@@ -120,6 +122,12 @@ class HousesController < ApplicationController
   private
   def search_params
     params[:query]
+  end
+
+  def login
+    if current_user.nil?
+      redirect_to root_path, flash: {:warning => "只有管理员能进行此操作喔"}
+    end
   end
 
 end

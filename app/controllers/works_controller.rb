@@ -1,6 +1,9 @@
 class WorksController < ApplicationController
-  @@work_id=0
 
+
+  before_action :login, only: [:ajax]
+
+  @@work_id=0
   def ajax
     @@work_id=@@work_id+1
     house=House.find_by(id: @@work_id)
@@ -38,4 +41,13 @@ class WorksController < ApplicationController
     end
     render json: params.as_json
   end
+
+  private
+
+  def login
+    if current_user.nil?
+      redirect_to root_path, flash: {:warning => "只有管理员能进行此操作喔"}
+    end
+  end
+
 end
