@@ -47,15 +47,15 @@ HousePricing旨在提供房价的可视化预测，帮助人们更好的评估�
 
 ## 截图
 
-<img src="/lib/screen1.png" width="900">
+<img src="/lib/screen1.png">
 
-<img src="/lib/screen2.png" width="900">
+<img src="/lib/screen2.png">
 
-<img src="/lib/screen3.png" width="900">
+<img src="/lib/screen3.png">
 
-<img src="/lib/screen4.png" width="900">
+<img src="/lib/screen4.png">
 
-<img src="/lib/screen5.png" width="900">
+<img src="/lib/screen5.png">
 
 ## 数据说明
 
@@ -79,6 +79,6 @@ rake db:seed
 
 在浏览器中输入`localhost:3000`，即可访问主页
 
-**若需要原数据（我目前用的数据），请导入根目录下的`mydb.dump`到postgresql数据库
+**若需要原数据（我目前用的数据），请导入根目录下的`mydb.dump`到postgresql数据库**
 
 
