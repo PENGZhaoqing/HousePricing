@@ -2,6 +2,12 @@
 
 HousePricing旨在提供房价的可视化预测，帮助人们更好的评估房产和预测未来的价格
 
+目前应用已上线，请点击[这里](http://house-pricing.herokuapp.com/)访问，因为挂在免费的Heroku服务器中，第一次加载可能会很慢，请耐心等待
+
+如果觉得好，请给项目点颗星来支持
+
+有什么好的建议，请在issue中提出，欢迎contributors！
+
 ## How?
 
 ### 1. 数据挖掘 (Almost Done)
@@ -57,10 +63,11 @@ HousePricing旨在提供房价的可视化预测，帮助人们更好的评估�
 
 <img src="/lib/data_type.png" width="700">
 
-## 使用
+## 面向开发者（数据挖掘工程师，数据可视化分析师等）
 
-由rails框架开发，请自行安装相关环境，fork此项目
+如果你是开发者，你完全可以自己导入自己的房屋数据，然后通过百度API爬取周围的基础设施，获得的数据可用来作为学术研究和分析等
 
+本项目由rails框架开发，请自行安装相关环境，请先fork此项目，然后运行下面：
 
 ```
 git clone your_forked_project
@@ -71,5 +78,7 @@ rake db:seed
 ```
 
 在浏览器中输入`localhost:3000`，即可访问主页
+
+**若需要原数据（我目前用的数据），请导入根目录下的`mydb.dump`到postgresql数据库
 
 
