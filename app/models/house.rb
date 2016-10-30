@@ -9,7 +9,11 @@ class House < ActiveRecord::Base
 
   def self.search(query)
     unless query.blank?
-      houses=House.where('community LIKE :search OR street LIKE :search OR floor LIKE :search OR room_shape LIKE :search OR build_time = :search_i OR area = :search_i', search: "%#{query}%", search_i: query)
+      if query.to_i.to_s==query
+        houses=House.where('build_time = :search OR area = :search', search: query)
+      else
+        houses=House.where('community LIKE :search OR street LIKE :search OR floor LIKE :search OR room_shape LIKE :search', search: "%#{query}%")
+      end
     else
       houses= House.all
     end
@@ -63,7 +67,7 @@ class House < ActiveRecord::Base
   end
 
   def self.to_csv
-    attributes = %w{id community street average_price build_time floor room_shape latitude longitude distance school_num bus_num shop_num hospital_num work_num subway_num}
+    attributes = %w{id community street area average_price build_time floor room_shape latitude longitude distance school_num bus_num shop_num hospital_num work_num subway_num}
 
     CSV.generate(headers: true) do |csv|
       csv << attributes
@@ -73,7 +77,6 @@ class House < ActiveRecord::Base
       end
     end
   end
-
 
 
 end
