@@ -16,7 +16,6 @@
 //= require echarts
 //= require dataTool.min
 //= require bmap.min
-//= require search_baidu_api
 //= require bootstrap.min
 //= require metisMenu
 //= require sb-admin-2
