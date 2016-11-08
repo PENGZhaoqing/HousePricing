@@ -16,6 +16,10 @@ class HomeController < ApplicationController
 
   end
 
+  def tableau
+
+  end
+
   def get_collection
     # houses=House.where.not('houses.latitude' => nil).where.not('houses.longitude' => nil).where('houses.distance < 80000')
 

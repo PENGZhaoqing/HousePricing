@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get 'home/scatter'
   get 'home/bar'
   get 'home/heatmap'
+  get 'home/tableau'
 
   post 'sessions/login' => 'sessions#create'
   delete 'sessions/logout' => 'sessions#destroy'
