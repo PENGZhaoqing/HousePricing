@@ -1,6 +1,7 @@
 class CreateHouses < ActiveRecord::Migration
   def change
     create_table :houses do |t|
+
       t.integer :area
       t.string :url
       t.integer :average_price
@@ -11,6 +12,8 @@ class CreateHouses < ActiveRecord::Migration
       t.float :latitude
       t.float :longitude
       t.string :street
+
+      t.float :distance
 
       t.timestamps null: false
     end

@@ -18,7 +18,6 @@ ActiveRecord::Schema.define(version: 20161027095326) do
 
   create_table "buses", force: :cascade do |t|
     t.string   "name"
-    t.integer  "distance"
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "created_at", null: false
@@ -32,13 +31,13 @@ ActiveRecord::Schema.define(version: 20161027095326) do
   create_table "buses_houses", force: :cascade do |t|
     t.integer  "bus_id"
     t.integer  "house_id"
+    t.integer  "distance"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "hospitals", force: :cascade do |t|
     t.string   "name"
-    t.integer  "distance"
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "created_at", null: false
@@ -52,6 +51,7 @@ ActiveRecord::Schema.define(version: 20161027095326) do
   create_table "hospitals_houses", force: :cascade do |t|
     t.integer  "hospital_id"
     t.integer  "house_id"
+    t.integer  "distance_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
@@ -67,20 +67,15 @@ ActiveRecord::Schema.define(version: 20161027095326) do
     t.float    "latitude"
     t.float    "longitude"
     t.string   "street"
+    t.float    "distance"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
-    t.integer  "bus_num"
-    t.integer  "school_num"
-    t.integer  "work_num"
-    t.integer  "subway_num"
-    t.integer  "shop_num"
-    t.integer  "hospital_num"
-    t.float    "distance"
   end
 
   create_table "houses_schools", force: :cascade do |t|
     t.integer  "school_id"
     t.integer  "house_id"
+    t.integer  "distance"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -88,6 +83,7 @@ ActiveRecord::Schema.define(version: 20161027095326) do
   create_table "houses_shops", force: :cascade do |t|
     t.integer  "shop_id"
     t.integer  "house_id"
+    t.integer  "distance"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -95,6 +91,7 @@ ActiveRecord::Schema.define(version: 20161027095326) do
   create_table "houses_subways", force: :cascade do |t|
     t.integer  "subway_id"
     t.integer  "house_id"
+    t.integer  "distance"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -102,13 +99,13 @@ ActiveRecord::Schema.define(version: 20161027095326) do
   create_table "houses_works", force: :cascade do |t|
     t.integer  "work_id"
     t.integer  "house_id"
+    t.integer  "distance"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "schools", force: :cascade do |t|
     t.string   "name"
-    t.integer  "distance"
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "created_at", null: false
@@ -121,7 +118,6 @@ ActiveRecord::Schema.define(version: 20161027095326) do
 
   create_table "shops", force: :cascade do |t|
     t.string   "name"
-    t.integer  "distance"
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "created_at", null: false
@@ -134,7 +130,6 @@ ActiveRecord::Schema.define(version: 20161027095326) do
 
   create_table "subways", force: :cascade do |t|
     t.string   "name"
-    t.integer  "distance"
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "created_at", null: false
@@ -158,7 +153,6 @@ ActiveRecord::Schema.define(version: 20161027095326) do
 
   create_table "works", force: :cascade do |t|
     t.string   "name"
-    t.integer  "distance"
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "created_at", null: false

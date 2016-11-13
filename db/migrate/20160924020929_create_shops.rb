@@ -2,7 +2,6 @@ class CreateShops < ActiveRecord::Migration
   def change
     create_table :shops do |t|
       t.string :name
-      t.integer :distance
       t.float :latitude
       t.float :longitude
 

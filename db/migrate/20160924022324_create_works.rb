@@ -2,7 +2,6 @@ class CreateWorks < ActiveRecord::Migration
   def change
     create_table :works do |t|
       t.string :name
-      t.integer :distance
       t.float :latitude
       t.float :longitude
 

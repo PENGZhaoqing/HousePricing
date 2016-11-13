@@ -3,7 +3,7 @@ class HousesSubways < ActiveRecord::Migration
     create_table :houses_subways do |t|
       t.belongs_to :subway
       t.belongs_to :house
-
+      t.integer :distance
       t.timestamps null: false
     end
   end
