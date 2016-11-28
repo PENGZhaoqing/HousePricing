@@ -1,7 +1,7 @@
 class Bus < ActiveRecord::Base
-  has_and_belongs_to_many :houses
-  validates :latitude, presence: true, uniqueness: true
-  validates :longitude, presence: true, uniqueness: true
+
+  has_many :houses, through: :buses_houses
+  has_many :buses_houses, class_name: "BusesHouses"
 
   def self.to_csv
     attributes = %w{id name distance latitude longitude}
