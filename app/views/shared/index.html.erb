@@ -145,20 +145,15 @@
         $('#community').html(data.community);
         $('#street').html(data.street);
 
-        myGeo.getPoint(data.street, function (point) {
-          if (point) {
-            markData(point, id);
+        var point = new BMap.Point(data.longitude, data.latitude);
+        myGeo.getLocation(point, function (rs) {
+          if (rs.address != "") {
+            markData(rs.point, id);
           } else {
-            myGeo.getPoint(data.community, function (repoint) {
-              if (repoint) {
-                markData(repoint, id)
-              } else {
-                setTimeout(function () {
-                  console.log("Error: no address of " + " id: " + data.id + " community: " + data.community + " street: " + data.street);
-                  getData();
-                }, timeInterval);
-              }
-            }, "北京市");
+            setTimeout(function () {
+              console.log("Error: no address of " + " id: " + data.id + " community: " + data.community + " street: " + data.street);
+              getData();
+            }, timeInterval);
           }
         }, "北京市");
       },
@@ -232,3 +227,20 @@
 
 </script>
 
+<!--myGeo.getPoint(data.street, function (point) {-->
+<!--if (point) {-->
+<!--markData(point, id);-->
+<!--} else {-->
+<!--myGeo.getPoint(data.community, function (repoint) {-->
+<!--if (repoint) {-->
+<!--markData(repoint, id)-->
+<!--} else {-->
+<!--setTimeout(function () {-->
+<!--console.log("Error: no address of " + " id: " + data.id + " community: " + data.community + " street: " + data.street);-->
+<!--getData();-->
+<!--}, timeInterval);-->
+<!--}-->
+<!--}, "北京市");-->
+<!--}-->
+<!--}, "北京市");-->
+<!--},-->
