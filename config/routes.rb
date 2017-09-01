@@ -1,39 +1,31 @@
 Rails.application.routes.draw do
 
-  root 'home#index'
-  get 'home/get_collection'
-  get 'home/scatter'
-  get 'home/bar'
-  get 'home/heatmap'
-  get 'home/tableau'
+  root 'houses#map'
+  get 'visualisation/scatter'
+  # get 'visualisation/bar'
+  get 'visualisation/heatmap'
+  get 'visualisation/tableau'
 
   post 'sessions/login' => 'sessions#create'
   delete 'sessions/logout' => 'sessions#destroy'
 
   resources :houses, only: [:create, :index, :show] do
     collection do
-      get 'collect'
-      get 'get_each'
       get 'export'
-      get 'rollup'
       get 'filter'
+      get 'return_houses'
+      get 'return_nums_prices'
     end
     member do
-      get 'ajax'
+      get 'nearby'
     end
   end
 
-  resources :buses, only: [:create, :index] do
+  resources :spiders, only: [:create, :index] do
     collection do
-      get 'export'
-      get 'export_asso'
-      get 'ajax'
-    end
-  end
-
-  resources :works, only: [:create, :index] do
-    collection do
-      get 'ajax'
+      get 'return_next'
+      get 'export_bus'
+      get 'export_bus_house'
     end
   end
 
@@ -43,23 +35,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :subways, only: [:create, :index] do
-    collection do
-      get 'ajax'
-    end
-  end
-
-  resources :schools, only: [:create, :index] do
-    collection do
-      get 'ajax'
-    end
-  end
-
-  resources :shops, only: [:create, :index] do
-    collection do
-      get 'ajax'
-    end
-  end
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

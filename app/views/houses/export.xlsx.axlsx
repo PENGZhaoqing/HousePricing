@@ -1,7 +1,7 @@
 wb = xlsx_package.workbook
 wb.add_worksheet(name: "worksheet") do |sheet|
-  sheet.add_row ["小区名", "地址","均价","面积","建造时间","楼层","房型","经度","纬度","几环","学校","公交","商场","医院","写字楼","地铁"]
+  sheet.add_row ["小区名", "地址","均价","面积","建造时间","楼层","房型","经度","纬度","学校","公交","商场","医院","写字楼","地铁"]
   @houses.each do |house|
-    sheet.add_row [house.community, house.street, house.average_price, house.area, house.build_time,house.floor,house.room_shape,house.latitude, house.longitude,house.distance,house.school_num,house.bus_num,house.shop_num,house.hospital_num,house.work_num,house.subway_num]
+    sheet.add_row [house.community, house.street, house.average_price, house.area, house.build_time,house.floor,house.room_shape,house.latitude, house.longitude,house.schools.length,house.buses.length,house.shops.length,house.hospitals.length,house.works.length,house.subways.length]
   end
 end

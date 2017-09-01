@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 20161027095326) do
   create_table "hospitals_houses", force: :cascade do |t|
     t.integer  "hospital_id"
     t.integer  "house_id"
-    t.integer  "distance_id"
+    t.integer  "distance"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
@@ -61,47 +61,14 @@ ActiveRecord::Schema.define(version: 20161027095326) do
     t.string   "url"
     t.integer  "average_price"
     t.string   "floor"
-    t.string   "build_time"
+    t.integer  "build_time"
     t.string   "community"
     t.string   "room_shape"
     t.float    "latitude"
     t.float    "longitude"
     t.string   "street"
-    t.float    "distance"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
-  end
-
-  create_table "houses_schools", force: :cascade do |t|
-    t.integer  "school_id"
-    t.integer  "house_id"
-    t.integer  "distance"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "houses_shops", force: :cascade do |t|
-    t.integer  "shop_id"
-    t.integer  "house_id"
-    t.integer  "distance"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "houses_subways", force: :cascade do |t|
-    t.integer  "subway_id"
-    t.integer  "house_id"
-    t.integer  "distance"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "houses_works", force: :cascade do |t|
-    t.integer  "work_id"
-    t.integer  "house_id"
-    t.integer  "distance"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "schools", force: :cascade do |t|
@@ -116,6 +83,14 @@ ActiveRecord::Schema.define(version: 20161027095326) do
   add_index "schools", ["longitude"], name: "index_schools_on_longitude", using: :btree
   add_index "schools", ["name"], name: "index_schools_on_name", using: :btree
 
+  create_table "schools_houses", force: :cascade do |t|
+    t.integer  "school_id"
+    t.integer  "house_id"
+    t.integer  "distance"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "shops", force: :cascade do |t|
     t.string   "name"
     t.float    "latitude"
@@ -128,6 +103,14 @@ ActiveRecord::Schema.define(version: 20161027095326) do
   add_index "shops", ["longitude"], name: "index_shops_on_longitude", using: :btree
   add_index "shops", ["name"], name: "index_shops_on_name", using: :btree
 
+  create_table "shops_houses", force: :cascade do |t|
+    t.integer  "shop_id"
+    t.integer  "house_id"
+    t.integer  "distance"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "subways", force: :cascade do |t|
     t.string   "name"
     t.float    "latitude"
@@ -139,6 +122,14 @@ ActiveRecord::Schema.define(version: 20161027095326) do
   add_index "subways", ["latitude"], name: "index_subways_on_latitude", using: :btree
   add_index "subways", ["longitude"], name: "index_subways_on_longitude", using: :btree
   add_index "subways", ["name"], name: "index_subways_on_name", using: :btree
+
+  create_table "subways_houses", force: :cascade do |t|
+    t.integer  "subway_id"
+    t.integer  "house_id"
+    t.integer  "distance"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "name"
@@ -162,5 +153,13 @@ ActiveRecord::Schema.define(version: 20161027095326) do
   add_index "works", ["latitude"], name: "index_works_on_latitude", using: :btree
   add_index "works", ["longitude"], name: "index_works_on_longitude", using: :btree
   add_index "works", ["name"], name: "index_works_on_name", using: :btree
+
+  create_table "works_houses", force: :cascade do |t|
+    t.integer  "work_id"
+    t.integer  "house_id"
+    t.integer  "distance"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
 end

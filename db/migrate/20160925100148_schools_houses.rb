@@ -1,6 +1,6 @@
-class HousesSchools < ActiveRecord::Migration
+class SchoolsHouses < ActiveRecord::Migration
   def change
-    create_table :houses_schools do |t|
+    create_table :schools_houses do |t|
       t.belongs_to :school
       t.belongs_to :house
       t.integer  :distance

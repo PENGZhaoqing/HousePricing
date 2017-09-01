@@ -1,0 +1,247 @@
+<div class="row">
+  <div class="col-lg-12">
+    <h3 class="page-header">抓取附近 </h3>
+    <!--TODO Task1-->
+    <!--将房屋信息移植到这里显示，去掉当前房屋信息Panel-->
+    <!--END-->
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-4">
+
+    <!--TODO Task2-->
+    <!--增加进度条，实时显示抓取的进度-->
+    <!--END-->
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        当前房屋信息:
+      </div>
+      <div class="panel-body">
+        <table>
+          <tr>
+            <td style="width: 20%">ID:</td>
+            <td id="id"></td>
+          </tr>
+          <tr>
+            <td style="width: 20%">小区:</td>
+            <td id="community"></td>
+          </tr>
+          <tr>
+            <td style="width: 20%">地址:</td>
+            <td id="street"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!--TODO Task3-->
+    <!--分抓取的类别实时返回周边数据，现在是所有的数据都在一个panel显示-->
+    <!--提示：增加多个panel，每一个panel显示一类数据，比如bus_panel里显示抓取的bus信息-->
+    <!--END-->
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        实时返回周边数据
+
+      </div>
+      <div class="panel-body">
+        <table id="result" class="table table-responsive table-condensed table-hover">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>地点名</th>
+            <th>直线距离</th>
+          </tr>
+          </thead>
+          <tbody style="font-size: small">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-sm-8">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        百度地图API
+        <div class="pull-right">
+          <button class="btn btn-success btn-xs" onclick="flag = false;GetDataFromServer();">开始</button>
+          <button class="btn btn-danger btn-xs" onclick="flag=true;">暂停</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div id="l-map" style="height: 500px;width: 100%">
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="text/javascript">
+
+    var get_data_url = "<%=return_next_spiders_path%>";
+    var post_data_url = "<%=spiders_path%>";
+    var timeInterval = 100;
+    var flag = false;
+    var search_range = 1000;
+
+    // 两个数组的顺序不能错
+    var keywords_en = ["bus", "shop", "school", "subway", "work", "hospital"];
+    var keywords = ["公交车站", "商场", "学校", "地铁站", "写字楼", "医院"];
+
+    var map = new BMap.Map("l-map");
+    // 初始化map坐标为北京,11为比例尺
+    map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);
+    map.enableScrollWheelZoom(true);
+    var myGeo = new BMap.Geocoder();
+
+    //  var circle = new BMap.Circle(new BMap.Point(116.404, 39.915), search_range, {
+    //    fillColor: "blue",
+    //    strokeWeight: 1,
+    //    fillOpacity: 0.1,
+    //    strokeOpacity: 0.3
+    //  });
+    //  map.addOverlay(circle);
+
+    function displayHouseData(data) {
+        $('#id').html(data.id);
+        $('#community').html(data.community);
+        $('#street').html(data.street);
+    }
+
+    function DisplayClear() {
+        $('#result tbody tr').remove();
+    }
+
+    function DisplayNearbyData(nearby_info, locate, distance) {
+        // id, title, distance
+        $('#result tbody').append("<tr><td>" + nearby_info.length + "</td><td>" + locate.title + "</td><td>" + distance + "</td></tr>");
+    }
+
+    function GetDataFromServer() {
+        $.ajax({
+            type: "GET",
+            url: get_data_url,
+            dataType: 'json',
+            success: function (house_data) {
+
+                // 拿到房屋数据后先显示出来
+                displayHouseData(house_data);
+
+                // 然后先用街道去查坐标
+                myGeo.getPoint(house_data.street, function (point) {
+                    if (point) {
+                        // 如果查到坐标，开始检索周围信息
+                        SearchStart(point, house_data);
+                    } else {
+                        // 如果街道没查搭配，再用小区去查坐标
+                        myGeo.getPoint(house_data.community, function (repoint) {
+                            if (repoint) {
+                                // 如果查到坐标，开始检索周围信息
+                                SearchStart(repoint, house_data)
+                            } else {
+                                setTimeout(function () {
+                                    console.log("Error: no address of " + " id: " + data.id + " community: " + data.community + " street: " + data.street);
+                                    // 如果还没查到坐标，继续查询下一个房屋，延迟timeInterval秒
+                                    GetDataFromServer();
+                                }, timeInterval);
+                            }
+                        }, "北京市");
+                    }
+                }, "北京市");
+            },
+            error: function () {
+                alert('error')
+            },
+            timeout: function () {
+                alert('time out')
+            }
+        });
+    }
+
+
+    function SearchStart(point, house_data) {
+        // 先在地图上标记出来
+        map.centerAndZoom(point, 16);
+        map.addOverlay(new BMap.Marker(point));
+
+        // 首先查询此房屋的第一个关键词信息（公交车站，idx＝0）
+        setTimeout(function () {
+            SearchNearby(point, house_data, 0);
+        }, timeInterval);
+
+    }
+
+    function SearchNearby(house_loc, house_data, keyword_idx) {
+        var nearby_info = [];
+        // 清除地图覆盖物
+        map.clearOverlays();
+        var local = new BMap.LocalSearch(map, {
+            renderOptions: {map: map, autoViewport: false},
+            pageCapacity: 50,
+            onSearchComplete: function (results) {
+                DisplayClear();
+                if (local.getStatus() == BMAP_STATUS_SUCCESS) {
+                    // 百度地图成功返回，将每个周边信息储存到nearby_info里
+                    for (var i = 0; i < results.getCurrentNumPois(); i++) {
+                        var locate = results.getPoi(i);
+                        if (locate != null) {
+                            // 查询结果与房屋的距离
+                            var distance = parseFloat(map.getDistance(locate.point, house_loc)).toFixed(1);
+                            nearby_info.push(locate.title + "/" + locate.point.lng + '/' + locate.point.lat + '/' + distance);
+                            DisplayNearbyData(nearby_info, locate, distance)
+                        }
+                    }
+                    // 获得百度地图查询结果后立即发送给服务器
+                    return sendData(keywords_en[keyword_idx], nearby_info, house_data, house_loc, keyword_idx)
+                } else {
+                    GetDataFromServer();
+                    console.log("No records with baiduAPI:", local.getStatus());
+                    return false;
+                }
+            }
+        });
+        local.searchNearby(keywords[keyword_idx], house_loc, search_range);
+    }
+
+    function sendData(nearby_type, nearby_info, house_data, house_loc, idx) {
+        data = "nearby_type=" + nearby_type + "&nearby_info=" + nearby_info + "&id=" + house_data.id + "&lat=" + house_loc.lat + "&lng=" + house_loc.lng;
+        $.ajax({
+            type: "POST",
+            url: post_data_url,
+            data: data,
+            dataType: "JSON",
+            success: function (data) {
+                if (flag) {
+                    console.log("warning", 'pause');
+                } else {
+                    // 当查询到最后一个kewords时，请求服务器获得下一个房屋信息
+                    if (idx == keywords.length - 1) {
+                        GetDataFromServer();
+                    } else {
+                        // 查询此房屋的下一个关键词信息
+                        setTimeout(function () {
+                            SearchNearby(house_loc, house_data, idx + 1);
+                        }, timeInterval);
+                    }
+                    console.log("success", data);
+                }
+                return true;
+            },
+            error: function () {
+                alert('error in post');
+                return false;
+            },
+            timeout: function () {
+                alert('time out in post');
+                return false;
+            }
+        });
+    }
+
+
+</script>

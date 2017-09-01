@@ -11,6 +11,9 @@
   <div class="panel-body">
     <div class="row">
       <div class="col-md-4 col-lg-4 " align="center">
+        <!--TODO-->
+        <!--增加图片信息-->
+        <!--END-->
         <img src="http://placehold.it/280x200">
       </div>
       <div class=" col-md-8 col-lg-8 ">
@@ -31,14 +34,12 @@
           <tr>
             <td>建造时间:</td>
             <td><%= @house.build_time %>年</td>
-            <td>距离市中心:</td>
-            <td><%= @house.distance/1000.to_f %>千米</td>
+            <td>总价:</td>
+            <td><%= @house.average_price*@house.area/10000 %>万</td>
           </tr>
           <tr>
             <td>每平米:</td>
-            <td><%= @house.average_price/10000.to_f %>万</td>
-            <td>总价:</td>
-            <td><%= @house.average_price*@house.area/10000 %>万</td>
+            <td colspan=3><%= @house.average_price/10000.to_f %>万</td>
           </tr>
           <tr>
             <td>地址:</td>
@@ -63,12 +64,13 @@
 
 <div class="row">
 
-  <%= render 'houses/item', :num => @house.bus_num, :color => 'primary', :type => '公交', path: ajax_house_path(@house, data: 'bus'), icon: 'fa fa-bus fa-4x' %>
-  <%= render 'houses/item', :num => @house.work_num, :color => 'green', :type => '写字喽', path: ajax_house_path(@house, data: 'work'), icon: 'fa fa-building fa-4x' %>
-  <%= render 'houses/item', :num => @house.school_num, :color => 'yellow', :type => '学校', path: ajax_house_path(@house, data: 'school'), icon: 'fa fa-university fa-4x' %>
-  <%= render 'houses/item', :num => @house.hospital_num, :color => 'red', :type => '医院', path: ajax_house_path(@house, data: 'hospital'), icon: 'fa fa-heart fa-4x' %>
-  <%= render 'houses/item', :num => @house.subway_num, :color => 'light-blue', :type => '地铁', path: ajax_house_path(@house, data: 'subway'), icon: 'fa fa-subway fa-4x' %>
-  <%= render 'houses/item', :num => @house.shop_num, :color => 'purple', :type => '购物', path: ajax_house_path(@house, data: 'shop'), icon: 'fa fa-shopping-cart fa-4x' %>
+  <!--House Item-->
+  <%= render 'houses/item', :num => @house.buses.length, :color => 'primary', :type => '公交', link: nearby_house_path(@house, type: 'bus'), icon: 'fa fa-bus fa-4x' %>
+  <%= render 'houses/item', :num => @house.works.length, :color => 'green', :type => '写字喽', link: nearby_house_path(@house, type: 'work'), icon: 'fa fa-building fa-4x' %>
+  <%= render 'houses/item', :num => @house.schools.length, :color => 'yellow', :type => '学校', link: nearby_house_path(@house, type: 'school'), icon: 'fa fa-university fa-4x' %>
+  <%= render 'houses/item', :num => @house.hospitals.length, :color => 'red', :type => '医院', link: nearby_house_path(@house, type: 'hospital'), icon: 'fa fa-heart fa-4x' %>
+  <%= render 'houses/item', :num => @house.subways.length, :color => 'light-blue', :type => '地铁', link: nearby_house_path(@house, type: 'subway'), icon: 'fa fa-subway fa-4x' %>
+  <%= render 'houses/item', :num => @house.shops.length, :color => 'purple', :type => '购物', link: nearby_house_path(@house, type: 'shop'), icon: 'fa fa-shopping-cart fa-4x' %>
 
 </div>
 <!-- /.row -->
@@ -87,12 +89,12 @@
         <div class="panel-heading">
           <i class="fa fa-bar-chart-o fa-fw"></i> 地图信息
           <div class="pull-right">
-            <a href="#" class="btn btn-primary btn-xs" path="<%= ajax_house_path(@house, data: 'bus') %>" role="button">公交车站</a>
-            <a href="#" class="btn btn-primary btn-xs" path="<%= ajax_house_path(@house, data: 'subway') %>" role="button">地铁</a>
-            <a href="#" class="btn btn-success btn-xs" path="<%= ajax_house_path(@house, data: 'school') %>" role="button">学校</a>
-            <a href="#" class="btn btn-info btn-xs" path="<%= ajax_house_path(@house, data: 'work') %>" role="button">写字楼</a>
-            <a href="#" class="btn btn-danger btn-xs" path="<%= ajax_house_path(@house, data: 'hospital') %>" role="button">医院</a>
-            <a href="#" class="btn btn-warning btn-xs" path="<%= ajax_house_path(@house, data: 'shop') %>" role="button">购物</a>
+            <a href="#" class="btn btn-primary btn-xs" path="<%= nearby_house_path(@house, type: 'bus') %>" role="button">公交车站</a>
+            <a href="#" class="btn btn-primary btn-xs" path="<%= nearby_house_path(@house, type: 'subway') %>" role="button">地铁</a>
+            <a href="#" class="btn btn-success btn-xs" path="<%= nearby_house_path(@house, type: 'school') %>" role="button">学校</a>
+            <a href="#" class="btn btn-info btn-xs" path="<%= nearby_house_path(@house, type: 'work') %>" role="button">写字楼</a>
+            <a href="#" class="btn btn-danger btn-xs" path="<%= nearby_house_path(@house, type: 'hospital') %>" role="button">医院</a>
+            <a href="#" class="btn btn-warning btn-xs" path="<%= nearby_house_path(@house, type: 'shop') %>" role="button">购物</a>
           </div>
         </div>
         <div class="panel-body">
@@ -125,228 +127,246 @@
 
 <script>
 
-  var Histogram = echarts.init(document.getElementById('histogram'));
-  var pie_chart = echarts.init(document.getElementById('pie_chart'));
-  var radar_chart = echarts.init(document.getElementById('radar_chart'));
-  var histogram_colors = ['#d14a61', '#5793f3'];
+    var Histogram = echarts.init(document.getElementById('histogram'));
+    var pie_chart = echarts.init(document.getElementById('pie_chart'));
+    var radar_chart = echarts.init(document.getElementById('radar_chart'));
+    var histogram_colors = ['#d14a61', '#5793f3'];
 
-  var map = new BMap.Map("l-map");
-  var house_point = new BMap.Point(<%=@house.longitude%>, <%=@house.latitude%>);
-  map.centerAndZoom(house_point, 15);
-  var marker = new BMap.Marker(house_point);
-  map.addOverlay(marker);
-  marker.setAnimation(BMAP_ANIMATION_BOUNCE);
-  //  map.enableScrollWheelZoom(true);
-  //  var myGeo = new BMap.Geocoder();
+    var map = new BMap.Map("l-map");
+    // 创建Point对象，地址为当前房屋地址
+    var house_point = new BMap.Point(<%=@house.longitude%>, <%=@house.latitude%>);
+    map.centerAndZoom(house_point, 15);
+    var marker = new BMap.Marker(house_point);
+    map.addOverlay(marker);
+    marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+    //  map.enableScrollWheelZoom(true);
 
-  $('#map-detail a').click(function (event) {
-    event.preventDefault();
-    var link = $(this);
-    $.scrollTo($('#nav-scroll'), 300);
-    $.ajax({
-      type: "GET",
-      url: link.attr('path'),
-      dataType: 'json',
-      success: function (data) {
-        map.centerAndZoom(house_point, 15);
-        map.clearOverlays();
-        var marker = new BMap.Marker(house_point);
-        map.addOverlay(marker);
-        marker.setAnimation(BMAP_ANIMATION_BOUNCE);
 
-        $.each(data, function (index, item) {
-          var point = new BMap.Point(item.longitude, item.latitude);
-//          var marker = new BMap.Marker(point);
-//          map.addOverlay(marker);
-          var maker_type = link.attr('path').split('?')[1].split('=')[1];
-          var myIcon = new BMap.Icon("/icon/" + maker_type + ".png", new BMap.Size(25, 25));
-          var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
-          map.addOverlay(marker);              // 将标注添加到地图中
+    // 平均距离
+    avg_bus_distance = <%=average_distance(@house.buses_houses) %>;
+    avg_work_distance = <%=average_distance(@house.works_houses) %>;
+    avg_school_distance = <%=average_distance(@house.schools_houses) %>;
+    avg_hospital_distance = <%=average_distance(@house.hospitals_houses) %>;
+    avg_subway_distance = <%=average_distance(@house.subways_houses) %>;
+    avg_shop_distance = <%=average_distance(@house.shops_houses) %>;
 
-          var opts = {
-            width: 250,
-            height: 0,
-            title: item.name
-          };
-          var infoWindow = new BMap.InfoWindow("直线距离: " + item.distance + "米, 需要步行时间:" + parseFloat(item.distance / 50).toFixed(2) + "分", opts);
-          marker.addEventListener("mouseover", function () {
-            map.openInfoWindow(infoWindow, point); //开启信息窗口
-          });
-//          marker.addEventListener("mouseout", function () {
-//            map.closeInfoWindow(infoWindow, point);
-//          });
-        })
-      },
-      error: function () {
-        alert('error')
-      },
-      timeout: function () {
-        alert('time out')
-      }
+    // 个数
+    bus_num = <%=@house.buses.length%>;
+    work_num = <%=@house.works.length%>;
+    school_num = <%=@house.schools.length%>;
+    hospital_num = <%=@house.hospitals.length%>;
+    subway_num = <%=@house.subways.length%>;
+    shop_num = <%=@house.shops.length%>;
+
+    // 计算得分
+    traffic_score = evaluate(bus_num, avg_bus_distance) + evaluate(subway_num * 10, avg_subway_distance);
+    life_score = evaluate(shop_num, avg_shop_distance);
+    work_score = evaluate(work_num, avg_work_distance);
+    hosptial_score = evaluate(hospital_num, avg_hospital_distance);
+    education_score = evaluate(school_num, avg_school_distance);
+
+    // 查询house周围信息，在百度地图中标示出来
+    $('#map-detail a').click(function (event) {
+        // ajax提交，因此需要将link原来的效果取消
+        event.preventDefault();
+        var link = $(this);
+        // 滑动当前窗口至百度地图panel
+        $.scrollTo($('#nav-scroll'), 300);
+        $.ajax({
+            type: "GET",
+            url: link.attr('path'),
+            dataType: 'json',
+            success: function (data) {
+                map.centerAndZoom(house_point, 15);
+                map.clearOverlays();
+
+                // 设置当前房屋在地图中的标示
+                var marker = new BMap.Marker(house_point);
+                map.addOverlay(marker);
+                marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+
+                // 对周边信息进行遍历
+                $.each(data, function (index, item) {
+                    var point = new BMap.Point(item.longitude, item.latitude);
+                    var maker_type = link.attr('path').split('?')[1].split('=')[1];
+                    var myIcon = new BMap.Icon("/icon/" + maker_type + ".png", new BMap.Size(25, 25)); // 创建标注的图例
+                    var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
+                    map.addOverlay(marker);              // 将标注添加到地图中
+
+                    // 信息窗口选项
+                    var opts = {
+                        width: 250,
+                        height: 0,
+                        title: item.name
+                    };
+                    var distance = parseFloat(map.getDistance(point, house_point)).toFixed(1);
+                    var infoWindow = new BMap.InfoWindow("直线距离: " + distance + "米, 需要步行时间:" + parseFloat(distance / 50).toFixed(2) + "分", opts);
+                    marker.addEventListener("mouseover", function () {
+                        map.openInfoWindow(infoWindow, point); //开启信息窗口
+                    });
+                })
+            },
+            error: function () {
+                alert('error')
+            },
+            timeout: function () {
+                alert('time out')
+            }
+        });
     });
-  });
 
-  Histogram.setOption({
-        color: histogram_colors,
+    Histogram.setOption({
+            color: histogram_colors,
+            tooltip: {
+                trigger: 'axis'
+            },
+            grid: {
+                right: '20%'
+            },
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                data: ['个数', '平均距离']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    axisTick: {
+                        alignWithLabel: true
+                    },
+                    data: ['公交站', '写字楼', '学校', '医院', '地铁', '购物']
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '平均距离',
+                    min: 0,
+                    max: 1000,
+                    position: 'right',
+                    axisLine: {
+                        lineStyle: {
+                            color: histogram_colors[0]
+                        }
+                    },
+                    axisLabel: {
+                        formatter: '{value} m'
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '个数',
+                    min: 0,
+                    max: 50,
+                    position: 'left',
+                    axisLine: {
+                        lineStyle: {
+                            color: histogram_colors[1]
+                        }
+                    },
+                    axisLabel: {
+                        formatter: '{value} 个'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '平均距离',
+                    type: 'line',
+                    data: [avg_bus_distance,
+                        avg_work_distance,
+                        avg_school_distance,
+                        avg_hospital_distance,
+                        avg_subway_distance,
+                        avg_shop_distance]
+                },
+                {
+                    name: '个数',
+                    type: 'bar',
+                    yAxisIndex: 1,
+                    data: [bus_num, work_num, school_num, hospital_num, subway_num, shop_num]
+                }
+            ]
+        }
+    );
+
+    pie_chart.setOption({
         tooltip: {
-          trigger: 'axis'
-        },
-        grid: {
-          right: '20%'
-        },
-        toolbox: {
-          feature: {
-            dataView: {show: true, readOnly: false},
-            restore: {show: true},
-            saveAsImage: {show: true}
-          }
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
         legend: {
-          data: ['个数', '平均距离']
+            orient: 'vertical',
+            left: 'left',
+            data: ['公交', '地铁', '学校', '医院', '写字楼', '购物']
         },
-        xAxis: [
-          {
-            type: 'category',
-            axisTick: {
-              alignWithLabel: true
-            },
-            data: ['公交站', '写字楼', '学校', '医院', '地铁', '购物']
-          }
-        ],
-        yAxis: [
-          {
-            type: 'value',
-            name: '平均距离',
-            min: 0,
-            max: 1000,
-            position: 'right',
-            axisLine: {
-              lineStyle: {
-                color: histogram_colors[0]
-              }
-            },
-            axisLabel: {
-              formatter: '{value} m'
-            }
-          },
-          {
-            type: 'value',
-            name: '个数',
-            min: 0,
-            max: 50,
-            position: 'left',
-            axisLine: {
-              lineStyle: {
-                color: histogram_colors[1]
-              }
-            },
-            axisLabel: {
-              formatter: '{value} 个'
-            }
-          }
-        ],
         series: [
-          {
-            name: '平均距离',
-            type: 'line',
-            data: [
-              <%=average(@house.buses)%>,
-              <%=average(@house.works)%>,
-              <%=average(@house.schools)%>,
-              <%=average(@house.hospitals)%>,
-              <%=average(@house.subways)%>,
-              <%=average(@house.shops)%>]
-          },
-          {
-            name: '个数',
-            type: 'bar',
-            yAxisIndex: 1,
-            data: [
-              <%=@house.bus_num%>,
-              <%=@house.work_num%>,
-              <%=@house.school_num%>,
-              <%=@house.hospital_num%>,
-              <%=@house.subway_num%>,
-              <%=@house.shop_num%>]
-          }
+            {
+                name: '基础设施',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '60%'],
+                data: [
+                    {value: bus_num, name: '公交'},
+                    {value: subway_num, name: '地铁'},
+                    {value: school_num, name: '学校'},
+                    {value: hospital_num, name: '医院'},
+                    {value: work_num, name: '写字楼'},
+                    {value: shop_num, name: '购物'}
+                ],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
         ]
-      }
-  );
+    });
 
-  pie_chart.setOption({
-    tooltip: {
-      trigger: 'item',
-      formatter: "{a} <br/>{b} : {c} ({d}%)"
-    },
-    legend: {
-      orient: 'vertical',
-      left: 'left',
-      data: ['公交', '地铁', '学校', '医院', '写字楼', '购物']
-    },
-    series: [
-      {
-        name: '基础设施',
-        type: 'pie',
-        radius: '55%',
-        center: ['50%', '60%'],
-        data: [
-          {value: <%= @house.bus_num%>, name: '公交'},
-          {value: <%= @house.subway_num%>, name: '地铁'},
-          {value: <%= @house.school_num%>, name: '学校'},
-          {value: <%= @house.hospital_num%>, name: '医院'},
-          {value: <%= @house.work_num%>, name: '写字楼'},
-          {value: <%= @house.shop_num%>, name: '购物'},
-        ],
-        itemStyle: {
-          emphasis: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
+
+    radar_chart.setOption({
+        tooltip: {},
+        legend: {
+            data: ['综合得分']
+        },
+        radar: {
+            // shape: 'circle',
+            indicator: [
+                {name: '生活', max: 100},
+                {name: '交通', max: 100},
+                {name: '工作', max: 100},
+                {name: '教育', max: 100},
+                {name: '医疗', max: 100}
+            ]
+        },
+        series: [{
+            type: 'radar',
+            // areaStyle: {normal: {}},
+            data: [
+                {
+                    value: [life_score, traffic_score, work_score, education_score, hosptial_score],
+                    name: '综合得分'
+                }
+            ]
+        }]
+    });
+
+    // TODO
+    // 完善评价函数
+    // END
+    function evaluate(num, distance) {
+        var result = num * 2 - distance / 50;
+        if (result < 0) {
+            return 0
         }
-      }
-    ]
-  });
-
-
-  radar_chart.setOption({
-    tooltip: {},
-    legend: {
-      data: ['综合得分']
-    },
-    radar: {
-      // shape: 'circle',
-      indicator: [
-        {name: '生活', max: 20},
-        {name: '交通', max: 40},
-        {name: '工作', max: 40},
-        {name: '教育', max: 40},
-        {name: '医疗', max: 40}
-      ]
-    },
-    series: [{
-      type: 'radar',
-      // areaStyle: {normal: {}},
-      data: [
-        {
-          value: [evaluate(<%=@house.shop_num%>, <%=average(@house.shops)%>),
-            evaluate(<%=@house.bus_num%>, <%=average(@house.works)%>) + evaluate(<%=@house.subway_num*10%>, <%=average(@house.subways)%>),
-            evaluate(<%=@house.work_num%>, <%=average(@house.shops)%>),
-            evaluate(<%=@house.school_num%>, <%=average(@house.schools)%>),
-            evaluate(<%=@house.hospital_num%>, <%=average(@house.hospitals)%>)],
-          name: '综合得分'
-        }
-      ]
-    }]
-  });
-
-  function evaluate(num, distance) {
-    var result = num - distance / 2000;
-    if (result > 40) {
-      result = 40;
+        return result;
     }
-    return result;
-  }
-
 
 </script>

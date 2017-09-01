@@ -1,0 +1,325 @@
+</br>
+<div class="row">
+
+  <div class="col-sm-8">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 北京房价总体分布图
+      </div>
+      <div class="panel panel-body">
+        <div id="main" style="width: 100%;height:500px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <i class="fa fa-search fa-fw"></i> 基本筛选
+      </div>
+      <div class="panel panel-body">
+
+        <form class="form">
+          <div class="form-group">
+            <label>每平米价格(±1.5万):</label>
+            <%= text_field_tag 'average_price', params[:price], class: "form-control input-sm" %>
+          </div>
+
+          <div class="form-group">
+            <label>面积大小(±20):</label>
+            <%= text_field_tag 'area', params[:area], class: "form-control input-sm" %>
+          </div>
+
+          <div class="form-group">
+            <label>房型:</label>
+            <%#= select_tag 'room_shape', options_for_select(House.select(:room_shape).map(&:room_shape).uniq, ""), class: "form-control input-sm" %>
+            <%= text_field_tag 'room_shape', params[:room_shape], class: "form-control input-sm" %>
+          </div>
+
+          <div class="form-group">
+            <label>建造时间(年):</label>
+            <%= text_field_tag 'build_time', params[:build_time], class: "form-control input-sm" %>
+          </div>
+
+          <div class="form-group">
+            <label>地址:</label>
+            <%= text_field_tag 'street', params[:street], class: "form-control input-sm" %>
+          </div>
+
+          <button class="btn btn-success btn-block">查询</button>
+
+        </form>
+
+        <button onclick="reset();" type="button" class="btn btn-primary btn-block" style="margin-top: 10px;">重置</button>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 默认筛选空
+    draw('', '', '', '', '');
+
+    // 点击提交表单后，由ajax的draw负责
+    $('form').submit(function () {
+        var params = $(this).serializeArray();
+        var price = params[0].value;
+        var area = params[1].value;
+        var room_shape = params[2].value;
+        var build_time = params[3].value;
+        var street = params[4].value;
+        draw(price, area, room_shape, build_time, street, distance);
+        return false; // prevents normal behaviour
+    });
+
+
+    function reset() {
+        draw('', '', '', '', '');
+    }
+
+    // 查询符合条件的房屋并画出
+    function draw(price, area, room_shape, build_time, street) {
+        $.ajax({
+            type: "GET",
+            url: "/houses/return_houses",
+            data: "price=" + price + "&area=" + area + "&room_shape=" + room_shape + "&build_time=" + build_time + "&street=" + street,
+            dataType: 'json',
+            success: function (data) {
+                myChart.hideLoading();
+                var house_data = [];
+
+                // 对所有的house进行遍历，按照一定的格式构造每个house的信息
+                $.each(data, function (index, house) {
+                    var each_house = [];
+                    each_house.push(house.longitude, house.latitude, house.id, house.average_price / 10000, house.community, house.area, house.room_shape, house.floor, house.build_time, house.street);
+                    house_data.push(each_house);
+                });
+
+                // 点击后到跳到具体的房屋信息里
+                myChart.on('click', function (params) {
+                    window.open("/houses/" + encodeURIComponent(params.value[2]));
+                });
+
+                // 在百度地图中画出来
+                myChart.setOption({
+                    backgroundColor: '#404a59',
+                    tooltip: {
+                        padding: 10,
+                        backgroundColor: '#222',
+                        borderColor: '#777',
+                        borderWidth: 1,
+                        trigger: 'item',
+                        formatter: function (obj) {
+                            var value = obj.value;
+                            return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+                                + value[4] + ': ' + value[3] + "万"
+                                + '</div>'
+                                + '面积: ' + value[5] + '<br>'
+                                + '房型：' + value[6] + '<br>'
+                                + '楼层：' + value[7] + '<br>'
+                                + '建造时间：' + value[8] + '<br>'
+                                + '地址：' + value[9] + '<br>'
+                                + '距离天安门：' + value[10] + '<br>';
+
+                        }
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        y: 'bottom',
+                        x: 'right',
+                        data: ['价格'],
+                        textStyle: {
+                            color: '#fff'
+                        }
+                    },
+                    visualMap: {
+                        left: 'right',
+                        bottom: '0%',
+                        min: 0,
+                        max: 13,
+                        dimension: 3,
+                        precision: 0.1,
+                        text: ['每平方米/万'],
+                        textGap: 20,
+                        calculable: true,
+                        inRange: {
+                            color: ['#50a3ba', '#eac736', 'red']
+                        },
+                        textStyle: {
+                            color: '#fff'
+                        }
+                    },
+
+                    bmap: {
+                        center: [116.404, 39.915],
+                        zoom: 11,
+                        roam: true,
+                        mapStyle: {
+                            'styleJson': [
+                                {
+                                    'featureType': 'water',
+                                    'elementType': 'all',
+                                    'stylers': {
+                                        'color': '#031628'
+                                    }
+                                },
+                                {
+                                    'featureType': 'land',
+                                    'elementType': 'geometry',
+                                    'stylers': {
+                                        'color': '#000102'
+                                    }
+                                },
+                                {
+                                    'featureType': 'highway',
+                                    'elementType': 'all',
+                                    'stylers': {
+                                        'visibility': 'off'
+                                    }
+                                },
+                                {
+                                    'featureType': 'arterial',
+                                    'elementType': 'geometry.fill',
+                                    'stylers': {
+                                        'color': '#000000'
+                                    }
+                                },
+                                {
+                                    'featureType': 'arterial',
+                                    'elementType': 'geometry.stroke',
+                                    'stylers': {
+                                        'color': '#0b3d51'
+                                    }
+                                },
+                                {
+                                    'featureType': 'local',
+                                    'elementType': 'geometry',
+                                    'stylers': {
+                                        'color': '#000000'
+                                    }
+                                },
+                                {
+                                    'featureType': 'railway',
+                                    'elementType': 'geometry.fill',
+                                    'stylers': {
+                                        'color': '#000000'
+                                    }
+                                },
+                                {
+                                    'featureType': 'railway',
+                                    'elementType': 'geometry.stroke',
+                                    'stylers': {
+                                        'color': '#08304b'
+                                    }
+                                },
+                                {
+                                    'featureType': 'subway',
+                                    'elementType': 'geometry',
+                                    'stylers': {
+                                        'lightness': -70
+                                    }
+                                },
+                                {
+                                    'featureType': 'building',
+                                    'elementType': 'geometry.fill',
+                                    'stylers': {
+                                        'color': '#000000'
+                                    }
+                                },
+                                {
+                                    'featureType': 'all',
+                                    'elementType': 'labels.text.fill',
+                                    'stylers': {
+                                        'color': '#857f7f'
+                                    }
+                                },
+                                {
+                                    'featureType': 'all',
+                                    'elementType': 'labels.text.stroke',
+                                    'stylers': {
+                                        'color': '#000000'
+                                    }
+                                },
+                                {
+                                    'featureType': 'building',
+                                    'elementType': 'geometry',
+                                    'stylers': {
+                                        'color': '#022338'
+                                    }
+                                },
+                                {
+                                    'featureType': 'green',
+                                    'elementType': 'geometry',
+                                    'stylers': {
+                                        'color': '#062032'
+                                    }
+                                },
+                                {
+                                    'featureType': 'boundary',
+                                    'elementType': 'all',
+                                    'stylers': {
+                                        'color': '#465b6c'
+                                    }
+                                },
+                                {
+                                    'featureType': 'manmade',
+                                    'elementType': 'all',
+                                    'stylers': {
+                                        'color': '#022338'
+                                    }
+                                },
+                                {
+                                    'featureType': 'label',
+                                    'elementType': 'all',
+                                    'stylers': {
+                                        'visibility': 'off'
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    series: [{
+                        name: 'house',
+                        type: 'scatter',
+                        coordinateSystem: 'bmap',
+                        data: house_data,
+                        symbolSize: 12,
+                        pointSize: 5,
+                        blurSize: 6,
+                        label: {
+                            normal: {
+                                show: false
+                            },
+                            emphasis: {
+                                show: false
+                            }
+                        },
+                        itemStyle: {
+                            emphasis: {
+                                borderColor: '#fff',
+                                borderWidth: 1
+                            },
+                            normal: {
+                                opacity: 0.8
+                            }
+                        }
+                    }]
+                });
+            },
+            error: function () {
+                alert('error')
+            },
+            timeout: function () {
+                alert('time out')
+            }
+        });
+    }
+
+
+</script>
+
+

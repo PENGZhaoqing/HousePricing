@@ -1,28 +1,39 @@
 require 'csv'
 class House < ActiveRecord::Base
-  has_many :buses, through: :buses_houses
   has_many :buses_houses, class_name: "BusesHouses"
+  has_many :buses, through: :buses_houses
 
-  has_and_belongs_to_many :hospitals
-  has_and_belongs_to_many :schools
-  has_and_belongs_to_many :shops
-  has_and_belongs_to_many :subways
-  has_and_belongs_to_many :works
+  has_many :hospitals_houses, class_name: "HospitalsHouses"
+  has_many :hospitals, through: :hospitals_houses
+
+  has_many :schools_houses, class_name: "SchoolsHouses"
+  has_many :schools, through: :schools_houses
+
+  has_many :shops_houses, class_name: "ShopsHouses"
+  has_many :shops, through: :shops_houses
+
+  has_many :subways_houses, class_name: "SubwaysHouses"
+  has_many :subways, through: :subways_houses
+
+  has_many :works_houses, class_name: "WorksHouses"
+  has_many :works, through: :works_houses
 
   def self.search(query)
     unless query.blank?
+      # 若query为数字，则直接用build_time和area匹配
       if query.to_i.to_s==query
-        houses=House.where('build_time = :search OR area = :search', search: query)
+        House.where('build_time = :search OR area = :search', search: query)
       else
-        houses=House.where('community LIKE :search OR street LIKE :search OR floor LIKE :search OR room_shape LIKE :search', search: "%#{query}%")
+        House.where('community LIKE :search OR street LIKE :search OR floor LIKE :search OR room_shape LIKE :search', search: "%#{query}%")
       end
     else
-      houses= House.all
+      House.all
     end
-
-    return houses
   end
 
+  def self.next_record(id)
+    House.where('id > ?', id).first
+  end
 
   def self.filter(params)
 
@@ -37,13 +48,6 @@ class House < ActiveRecord::Base
       max=params[:area].to_i+20
       houses=House.where('area > :min AND area < :max', min: min, max: max) if houses.nil?
       houses=houses.where('area > :min AND area < :max', min: min, max: max)
-    end
-
-    unless params[:distance].blank?
-      min=(params[:distance].to_f-1)*1000
-      max=(params[:distance].to_i+1)*1000
-      houses=House.where('distance > :min AND distance < :max', min: min, max: max) if houses.nil?
-      houses=houses.where('distance > :min AND distance < :max', min: min, max: max)
     end
 
     unless params[:build_time].blank?
@@ -69,7 +73,7 @@ class House < ActiveRecord::Base
   end
 
   def self.to_csv
-    attributes = %w{id community street area average_price build_time floor room_shape latitude longitude distance school_num bus_num shop_num hospital_num work_num subway_num}
+    attributes = %w{id community street area average_price build_time floor room_shape latitude longitude schools.length buses.length shops.length hospitals.length works.length subways.length}
 
     CSV.generate(headers: true) do |csv|
       csv << attributes

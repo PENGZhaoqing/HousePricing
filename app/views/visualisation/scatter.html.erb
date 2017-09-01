@@ -1,0 +1,178 @@
+</br>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <i class="fa fa-bar-chart-o fa-fw"></i> 房价与周围基础设施关系
+  </div>
+  <div class="panel panel-body">
+    <div id="main" style="width: 800px;height:500px;"></div>
+  </div>
+</div>
+
+<script>
+    var myChart = echarts.init(document.getElementById('main'));
+
+    $.ajax({
+        type: "GET",
+        url: "/houses/return_nums_prices",
+        dataType: 'json',
+        success: function (data) {
+            var bus_price = [];
+            var hospital_price = [];
+            var work_price = [];
+            var subway_price = [];
+            var school_price = [];
+            var shop_price = [];
+
+            $.each(data, function (index, data) {
+                var each_bus_price = [];
+                each_bus_price.push(data[0], data[6] / 10000);
+                bus_price.push(each_bus_price);
+
+                var each_hospital_price = [];
+                each_hospital_price.push(data[1], data[6] / 10000);
+                hospital_price.push(each_hospital_price);
+
+                var each_shop_price = [];
+                each_shop_price.push(data[2], data[6] / 10000);
+                shop_price.push(each_shop_price);
+
+                var each_work_price = [];
+                each_work_price.push(data[3], data[6] / 10000);
+                work_price.push(each_work_price);
+
+                var each_school_price = [];
+                each_school_price.push(data[4], data[6] / 10000);
+                school_price.push(each_school_price);
+
+                var each_subway_price = [];
+                each_subway_price.push(data[5], data[6] / 10000);
+                subway_price.push(each_subway_price);
+
+            });
+
+            myChart.setOption({
+                animationThreshold: 5000,
+                title: {
+                    text: '附近基础设施散点图',
+                    link: '/houses'
+                },
+                grid: {
+                    left: '3%',
+                    right: '7%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    showDelay: 0,
+                    formatter: function (params) {
+                        return "附近: " + params.value[0] + '个' + params.seriesName + ", 每平方米: " + params.value[1] + '万元 ';
+                    },
+                    axisPointer: {
+                        show: true,
+                        type: 'cross',
+                        lineStyle: {
+                            type: 'dashed',
+                            width: 1
+                        }
+                    }
+                },
+                toolbox: {
+                    feature: {
+                        dataZoom: {},
+                        brush: {
+                            type: ['rect', 'polygon', 'clear']
+                        }
+                    }
+                },
+                brush: {},
+                legend: {
+                    data: ['公交', '地铁', '商场', '写字楼', '医院', '学校'],
+                    left: 'center',
+                    selected: {
+                        '公交': true,
+                        '地铁': false,
+                        '商场': false,
+                        '写字楼': false,
+                        '医院': false,
+                        '学校': false
+                    }
+                },
+                xAxis: {
+                    type: 'value',
+                    scale: true,
+                    axisLabel: {
+                        formatter: '{value} 个'
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    scale: true,
+                    axisLabel: {
+                        formatter: '{value} 万元'
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                },
+                series: [
+                    {
+                        name: '公交',
+                        type: 'scatter',
+                        large: true,
+                        symbolSize: 6,
+                        data: bus_price
+                    },
+                    {
+                        name: '地铁',
+                        type: 'scatter',
+                        large: true,
+                        symbolSize: 6,
+                        data: subway_price
+                    },
+                    {
+                        name: '学校',
+                        type: 'scatter',
+                        large: true,
+                        symbolSize: 6,
+                        data: school_price
+                    },
+                    {
+                        name: '医院',
+                        type: 'scatter',
+                        large: true,
+                        symbolSize: 6,
+                        data: hospital_price
+                    },
+                    {
+                        name: '写字楼',
+                        type: 'scatter',
+                        large: true,
+                        symbolSize: 6,
+                        data: work_price
+                    },
+                    {
+                        name: '商场',
+                        type: 'scatter',
+                        large: true,
+                        symbolSize: 6,
+                        data: shop_price
+                    }
+                ]
+            })
+            ;
+        },
+        error: function () {
+            alert('error')
+        },
+        timeout: function () {
+            alert('time out')
+        }
+    });
+
+</script>
+
+

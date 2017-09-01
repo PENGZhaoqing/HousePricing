@@ -17,45 +17,28 @@
       </li>
       <li>
         <%= link_to root_url, method: :get do %>
-            <i class="fa fa-dashboard fa-fw"></i> 主页
+            <i class="fa fa-dashboard fa-fw"></i> 地图找房
         <% end %>
       </li>
 
       <li><%= link_to houses_path, method: :get do %>
-            <i class="fa fa-table fa-fw"></i> 数据列表
+            <i class="fa fa-table fa-fw"></i> 房源列表
         <% end %>
       </li>
 
-
-
       <li>
-        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 数据可视化 <span class="fa arrow"></span></a>
+        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 房价分析 <span class="fa arrow"></span></a>
         <ul class="nav nav-second-level">
-          <li><%= link_to '散点图', home_scatter_path, method: :get %></li>
-          <li> <%= link_to '热力图', home_heatmap_path, method: :get %></li>
-          <li> <%= link_to '堆叠条形图', home_bar_path, method: :get %></li>
-          <li> <%= link_to 'Tableau', home_tableau_path, method: :get %></li>
+          <li><%= link_to '散点图', visualisation_scatter_path, method: :get %></li>
+          <li> <%= link_to '热力图', visualisation_heatmap_path, method: :get %></li>
+          <li> <%= link_to 'Tableau', visualisation_tableau_path, method: :get %></li>
 
         </ul>
       </li>
 
-
-      <li>
-        <a href="#"><i class="fa fa-map-marker fa-fw"></i> 数据抓取 <span class="fa arrow"></span></a>
-        <ul class="nav nav-second-level">
-          <li>
-            <a href="#">周边基础设施数据 <span class="fa arrow"></span></a>
-            <ul class="nav nav-third-level">
-              <li><%= link_to "公交车站", buses_path, method: :get %></li>
-              <li> <%= link_to "医院", hospitals_path, method: :get %></li>
-              <li> <%= link_to "学校", schools_path, method: :get %></li>
-              <li> <%= link_to "地铁站", subways_path, method: :get %></li>
-              <li> <%= link_to "商场", shops_path, method: :get %></li>
-              <li> <%= link_to "写字楼", works_path, method: :get %></li>
-            </ul>
-          </li>
-          <li> <%= link_to "房屋坐标数据", collect_houses_path, method: :get %></li>
-        </ul>
+      <li><%= link_to spiders_path, method: :get do %>
+            <i class="fa fa-map fa-fw"></i> 抓取房屋集周边
+        <% end %>
       </li>
 
     </ul>

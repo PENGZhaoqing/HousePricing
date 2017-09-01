@@ -13,7 +13,7 @@
   var house_data = [];
   $.ajax({
     type: "GET",
-    url: "/home/get_collection",
+    url: "/houses/return_houses",
     dataType: 'json',
     success: function (data) {
       myChart.hideLoading();
