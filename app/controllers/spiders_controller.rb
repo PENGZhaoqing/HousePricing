@@ -23,7 +23,7 @@ class SpidersController < ApplicationController
     # END
 
     if house == House.last
-      redirect_to buses_path, flash: {:success => "抓取完毕"}
+      redirect_to root_path, flash: {:success => "抓取完毕"}
     else
       respond_to do |format|
         format.json { render :json => house }
