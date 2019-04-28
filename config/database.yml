@@ -7,6 +7,10 @@
 default: &default
   adapter: postgresql
   encoding: unicode
+  host: <%= ENV['PG_HOST'] || 'localhost' %>
+  port: <%= ENV['PG_PORT'] || '5432' %>
+  username: <%= ENV['PG_USER'] || 'postgres' %>
+  password: <%= ENV['PG_PASSWORD'] || 'postgres' %>
   pool: 5
   timeout: 5000
 
