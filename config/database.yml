@@ -16,7 +16,7 @@ default: &default
 
 development:
   <<: *default
-  database: housepricing_development
+  database: <%= ENV['PG_DATABASE'] || 'housepricing_development' %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
