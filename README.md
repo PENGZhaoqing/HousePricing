@@ -95,5 +95,25 @@ rake db:seed
 
 在浏览器中输入`localhost:3000`，即可访问主页
 
+## Docker运行
+
+为了方便运行和部署，这里提供了简单的docker镜像。
+
+开发者首先需要在电脑上安装`docker`和`docker-compose`，然后运行下面：
+
+```
+# 编辑数据库配置
+cp docker-util/app.env.example docker-util/app.env
+vim docker-util/app.env
+
+# 拉取或生成镜像
+docker-compose build
+# OR
+docker pull pengedy/housepricing
+
+# 运行
+docker-compose up
+```
+
 **若需要原数据（我目前用的数据），请导入根目录下的`mydb.dump`到postgresql数据库**
 
