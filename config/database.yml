@@ -7,12 +7,16 @@
 default: &default
   adapter: postgresql
   encoding: unicode
+  host: <%= ENV['PG_HOST'] || 'localhost' %>
+  port: <%= ENV['PG_PORT'] || '5432' %>
+  username: <%= ENV['PG_USER'] || 'postgres' %>
+  password: <%= ENV['PG_PASSWORD'] || 'postgres' %>
   pool: 5
   timeout: 5000
 
 development:
   <<: *default
-  database: housepricing_development
+  database: <%= ENV['PG_DATABASE'] || 'housepricing_development' %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
