@@ -115,5 +115,7 @@ docker pull pengedy/housepricing
 docker-compose up
 ```
 
+即可访问http://localhost:3000
+
 **若需要原数据（我目前用的数据），请导入根目录下的`mydb.dump`到postgresql数据库**
 
