@@ -45,9 +45,9 @@ HousePricing旨在提供房价的可视化预测，帮助用户更好的评估�
 
     3.2 利用训练的模型对指定房屋价格进行评估和预测，并以科学地方法将结果进行可视化展示
     
-<p align="center">
-   <img src="/lib/framework_instruction.png" width="700">
-</p>
+
+framework_instruction.png![image](https://user-images.githubusercontent.com/11887913/111412866-297db080-8718-11eb-8b9c-54238356862d.png)
+
 
 ## 目前进展(更新)
 
@@ -63,21 +63,23 @@ HousePricing旨在提供房价的可视化预测，帮助用户更好的评估�
 
 ## 截图
 
-<img src="/lib/screen1.png">
+screen1.png![image](https://user-images.githubusercontent.com/11887913/111412970-55993180-8718-11eb-8918-83324c8ff110.png)
 
-<img src="/lib/screen2.png">
+screen2.png![image](https://user-images.githubusercontent.com/11887913/111412977-59c54f00-8718-11eb-88d2-a3340ee75dd7.png)
 
-<img src="/lib/screen3.png">
+screen3.png![image](https://user-images.githubusercontent.com/11887913/111412984-5c27a900-8718-11eb-8712-c5309b1060c7.png)
 
-<img src="/lib/screen4.png">
+screen4.png![image](https://user-images.githubusercontent.com/11887913/111412989-5f229980-8718-11eb-87fe-10d1e07e874f.png)
 
-<img src="/lib/screen5.png">
+screen5.png![image](https://user-images.githubusercontent.com/11887913/111412997-621d8a00-8718-11eb-9a93-a1ed1d76038b.png)
+
 
 ## 数据说明
 
 现有的一些字段以及字段之间的关联如下：
 
-<img src="/lib/data_type.png" width="700">
+data_type.png![image](https://user-images.githubusercontent.com/11887913/111413034-73ff2d00-8718-11eb-9ced-77b629920c9c.png)
+
 
 ## 开发
 
